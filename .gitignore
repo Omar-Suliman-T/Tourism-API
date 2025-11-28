@@ -1,0 +1,29 @@
+.claude/
+
+## Build Folders
+bin/
+obj/
+
+## OS files
+.DS_Store
+Thumbs.db
+
+## Logs
+*.log
+
+## NuGet packages
+*.nupkg
+*.snupkg
+packages/
+
+## Secrets
+appsettings.Development.json
+Tourist.API/appsettings.json
+Tourist.API/appsettings.Development.json
+
+secrets.json
+
+## IDEs
+.vs/
+.vscode/
+.idea/
