@@ -14,4 +14,9 @@
     <Folder Include="Controllers\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Tourist.APPLICATION\Tourist.APPLICATION.csproj" />
+    <ProjectReference Include="..\Tourist.PERSISTENCE\Tourist.PERSISTENCE.csproj" />
+  </ItemGroup>
+
 </Project>

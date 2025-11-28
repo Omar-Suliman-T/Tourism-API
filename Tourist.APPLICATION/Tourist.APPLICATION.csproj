@@ -14,4 +14,8 @@
     <Folder Include="Service\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Tourist.DOMAIN\Tourist.DOMAIN.csproj" />
+  </ItemGroup>
+
 </Project>
