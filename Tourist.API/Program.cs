@@ -1,8 +1,14 @@
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Scalar.AspNetCore;
+using Tourist.API.Middleware;
+using Tourist.APPLICATION.Interface;
+using Tourist.APPLICATION.Mapping.Auth;
+using Tourist.APPLICATION.UseCase.Auth;
 using Tourist.DOMAIN.model;
 using Tourist.PERSISTENCE;
+using Tourist.PERSISTENCE.Repository;
 
 namespace Tourist.API
 {
@@ -13,6 +19,9 @@ namespace Tourist.API
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddScoped<RegisterUseCase>();
+            builder.Services.AddScoped<RegisterMap>();
 
             var ConnectionString = builder.Configuration.GetConnectionString("Tour");
 
@@ -22,7 +31,7 @@ namespace Tourist.API
             builder.Services.AddIdentityCore<ApplicationUser>(options =>
                 options.User.RequireUniqueEmail = true)
                 .AddRoles<IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>();     
+                .AddEntityFrameworkStores<ApplicationDbContext>();
 
             builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
@@ -34,8 +43,9 @@ namespace Tourist.API
             if (app.Environment.IsDevelopment())
             {
                 app.MapOpenApi();
+                app.MapScalarApiReference();
             }
-
+            app.UseMiddleware<ExceptionHandlingMiddleware>();
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
