@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -18,9 +19,10 @@ namespace Tourist.PERSISTENCE.Repository
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly JWTDTOs _jwt;
-        public AuthRepository(UserManager<ApplicationUser> userManager)
+        public AuthRepository(UserManager<ApplicationUser> userManager, IOptions<JWTDTOs> jwt)
         {
             _userManager = userManager;
+            _jwt = jwt.Value;
         }
         public async Task<string> RegisterAsync(ApplicationUser user, string Password)
         {
@@ -52,7 +54,7 @@ namespace Tourist.PERSISTENCE.Repository
             var claims = new List<Claim>
             {
                new Claim(ClaimTypes.Email, user.Email),
-                new Claim("uid", user.Id)
+                new Claim(ClaimTypes.NameIdentifier, user.Id)
             };
 
             claims.AddRange(roles.Select(role => new Claim("role", role)));
