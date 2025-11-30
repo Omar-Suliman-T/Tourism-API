@@ -15,5 +15,21 @@ namespace Tourist.API.Controllers
             var result = await _registerUseCase.ExecuteAsync(registerDTOs);
             return Ok(result);
         }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> LoginAsync([FromBody] LoginDTOs model, [FromServices] LoginUseCase _loginUseCase)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _loginUseCase.ExecuteAsync(model);
+
+            if (!result.IsAuthenticated)
+                return BadRequest(result.Message);
+
+            return Ok(result);
+        }
     }
+
+
 }
