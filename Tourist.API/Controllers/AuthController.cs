@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Azure;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 using Tourist.APPLICATION.DTO.Auth;
 using Tourist.APPLICATION.UseCase.Auth;
 
@@ -14,6 +16,16 @@ namespace Tourist.API.Controllers
         {
             var result = await _registerUseCase.ExecuteAsync(registerDTOs);
             return Ok(result);
+        }
+        [HttpPost("change-password")]
+        public async Task<ActionResult<string>> changepassword([FromServices] ChangePasswordUseCase _changePasswordUseCase,ChangePasswordRequestDTO changePasswordRequestDTO)
+        {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var result = await _changePasswordUseCase.ExecuteAsync(User,changePasswordRequestDTO);
+            return StatusCode((int)result.Item1,result.Item2);
         }
     }
 }

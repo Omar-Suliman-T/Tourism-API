@@ -22,7 +22,7 @@ namespace Tourist.API
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<RegisterUseCase>();
             builder.Services.AddScoped<RegisterMap>();
-
+            builder.Services.AddScoped<ChangePasswordUseCase>();
             var ConnectionString = builder.Configuration.GetConnectionString("Tour");
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>

@@ -12,7 +12,7 @@ namespace Tourist.PERSISTENCE.Repository
     public class UnitOfWork : IUnitOfWork
     {
         private readonly UserManager<ApplicationUser> _userManager;
-
+        //private readonly ApplicationDbContext _context;
         public UnitOfWork(UserManager<ApplicationUser> userManager) { 
             _userManager = userManager;
             Auth = new AuthRepository(_userManager);
