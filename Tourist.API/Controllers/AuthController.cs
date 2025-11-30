@@ -15,5 +15,21 @@ namespace Tourist.API.Controllers
             var result = await _registerUseCase.ExecuteAsync(registerDTOs);
             return Ok(result);
         }
+
+        [HttpPost("Forget-Password")]
+        public async Task<IActionResult> ForgetPassword([FromBody] ForgetPasswordDTO forgetPasswordDTO, [FromServices] ForgetPasswordUseCase forgetPasswordUseCase)
+        {
+            var result = await forgetPasswordUseCase.ForgetPassword(forgetPasswordDTO);
+
+            return Ok(result);
+        }
+
+        [HttpPost("Reset-Password")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDTO resetPasswordDTO, [FromServices] ResetPasswordUseCase resetPasswordUseCase)
+        {
+            var result = await resetPasswordUseCase.ResetPassword(resetPasswordDTO);
+
+            return Ok(result);
+        }
     }
 }
