@@ -11,5 +11,6 @@ namespace Tourist.APPLICATION.Interface
     public interface IAuth
     {
         Task<string> RegisterAsync(ApplicationUser user, string Password);
+        Task<AuthDTOs> LoginAsync(LoginDTOs loginDTOs);
     }
 }

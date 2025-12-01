@@ -1,8 +1,12 @@
 
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
+using System.Text;
 using Tourist.API.Middleware;
+using Tourist.APPLICATION.DTO.Auth;
 using Tourist.APPLICATION.Interface;
 using Tourist.APPLICATION.Mapping.Auth;
 using Tourist.APPLICATION.UseCase.Auth;
@@ -22,6 +26,8 @@ namespace Tourist.API
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<RegisterUseCase>();
             builder.Services.AddScoped<RegisterMap>();
+            builder.Services.AddScoped<LoginUseCase>();
+            builder.Services.AddScoped<LoginMap>();
 
             var ConnectionString = builder.Configuration.GetConnectionString("Tour");
 
@@ -32,6 +38,33 @@ namespace Tourist.API
                 options.User.RequireUniqueEmail = true)
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
+
+
+            builder.Services.Configure<JWTDTOs>(builder.Configuration.GetSection("JWT"));
+            builder.Services.AddAuthentication(options => {
+                //Check JWT Token Header
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                //[authrize]
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;//unauth
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>//verified key
+            {
+                options.SaveToken = true;
+                options.RequireHttpsMetadata = false;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidIssuer = builder.Configuration["JWT:Issuer"],
+                    ValidateAudience = true,
+                    ValidAudience = builder.Configuration["JWT:Audience"],
+                    IssuerSigningKey =
+                        new SymmetricSecurityKey(
+                            Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]))
+
+                };
+            });
+
 
             builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
