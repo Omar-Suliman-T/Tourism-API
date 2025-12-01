@@ -16,6 +16,7 @@ namespace Tourist.API.Controllers
             return Ok(result);
         }
 
+
         [HttpPost("Forget-Password")]
         public async Task<IActionResult> ForgetPassword([FromBody] ForgetPasswordDTO forgetPasswordDTO, [FromServices] ForgetPasswordUseCase forgetPasswordUseCase)
         {
@@ -28,8 +29,22 @@ namespace Tourist.API.Controllers
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDTO resetPasswordDTO, [FromServices] ResetPasswordUseCase resetPasswordUseCase)
         {
             var result = await resetPasswordUseCase.ResetPassword(resetPasswordDTO);
-
             return Ok(result);
         }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> LoginAsync([FromBody] LoginDTOs model, [FromServices] LoginUseCase _loginUseCase)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _loginUseCase.ExecuteAsync(model);
+
+            if (!result.IsAuthenticated)
+                return BadRequest(result.Message);
+
+            
     }
+
+
 }
