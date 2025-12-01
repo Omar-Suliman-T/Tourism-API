@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Tourist.APPLICATION.DTO.Auth;
 using Tourist.APPLICATION.Interface;
+using Tourist.APPLICATION.Service.EmailService;
 using Tourist.DOMAIN.model;
 
 namespace Tourist.PERSISTENCE.Repository
@@ -14,10 +15,15 @@ namespace Tourist.PERSISTENCE.Repository
     public class UnitOfWork : IUnitOfWork
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IEmailSender _emailSender;
 
-        public UnitOfWork(UserManager<ApplicationUser> userManager, IOptions<JWTDTOs> jwt) { 
+
+        public UnitOfWork(UserManager<ApplicationUser> userManager, IEmailSender emailSender,IOptions<JWTDTOs> jwt) { 
             _userManager = userManager;
+            _emailSender = emailSender;
+            Auth = new AuthRepository(_userManager, _emailSender);
             Auth = new AuthRepository(_userManager,jwt);
+
         }
         public IAuth Auth { get; private set; }
 

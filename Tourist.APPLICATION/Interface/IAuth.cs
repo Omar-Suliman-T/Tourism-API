@@ -11,6 +11,11 @@ namespace Tourist.APPLICATION.Interface
     public interface IAuth
     {
         Task<string> RegisterAsync(ApplicationUser user, string Password);
+
+        Task<string> ForgetPasswordAsync(ForgetPasswordDTO forgetPasswordDTO);
+        Task<string> ResetPasswordAsync(ResetPasswordDTO resetPasswordDTO);
+
         Task<AuthDTOs> LoginAsync(LoginDTOs loginDTOs);
+
     }
 }

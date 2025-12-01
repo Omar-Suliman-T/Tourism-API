@@ -9,6 +9,7 @@ using Tourist.API.Middleware;
 using Tourist.APPLICATION.DTO.Auth;
 using Tourist.APPLICATION.Interface;
 using Tourist.APPLICATION.Mapping.Auth;
+using Tourist.APPLICATION.Service.EmailService;
 using Tourist.APPLICATION.UseCase.Auth;
 using Tourist.DOMAIN.model;
 using Tourist.PERSISTENCE;
@@ -23,8 +24,14 @@ namespace Tourist.API
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            var EmailConfig = builder.Configuration.GetSection("EmailConfiguration")
+                .Get<EmailCofiguration>();
+            builder.Services.AddSingleton(EmailConfig);
+            builder.Services.AddScoped<IEmailSender,EmailSender>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<RegisterUseCase>();
+            builder.Services.AddScoped<ForgetPasswordUseCase>();
+            builder.Services.AddScoped<ResetPasswordUseCase>();
             builder.Services.AddScoped<RegisterMap>();
             builder.Services.AddScoped<LoginUseCase>();
             builder.Services.AddScoped<LoginMap>();
@@ -37,7 +44,13 @@ namespace Tourist.API
             builder.Services.AddIdentityCore<ApplicationUser>(options =>
                 options.User.RequireUniqueEmail = true)
                 .AddRoles<IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
+
+            builder.Services.AddDataProtection();
+
+            builder.Services.Configure<DataProtectionTokenProviderOptions>(opt =>
+                opt.TokenLifespan = TimeSpan.FromHours(2));
 
 
 
