@@ -1,115 +1,141 @@
-public class AuthRepository : IAuth
+
+
+using Microsoft.AspNetCore.Identity;
+
+using Microsoft.AspNetCore.WebUtilities;
+using NETCore.MailKit.Core;
+
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+
+using System;
+using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
+using System.Security.Claims;
+using System.Text;
+using System.Threading.Tasks;
+using Tourist.APPLICATION.DTO.Auth;
+using Tourist.APPLICATION.Interface;
+using Tourist.APPLICATION.Service.EmailService;
+using Tourist.DOMAIN.model;
+
+
+namespace Tourist.PERSISTENCE.Repository
 {
-    private readonly UserManager<ApplicationUser> _userManager;
-    private readonly JWTDTOs _jwt;
-    private readonly IEmailSender _emailSender;
-
-    public AuthRepository(UserManager<ApplicationUser> userManager, IEmailSender emailSender, IOptions<JWTDTOs> jwt)
+    public class AuthRepository : IAuth
     {
-        _userManager = userManager;
-        _emailSender = emailSender;
-        _jwt = jwt.Value;
-    }
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly JWTDTOs _jwt;
+        private readonly IEmailSender _emailSender;
 
-    public async Task<string> RegisterAsync(ApplicationUser user, string Password)
-    {
-        var result = await _userManager.CreateAsync(user, Password);
-        if (result.Succeeded)
+        public AuthRepository(UserManager<ApplicationUser> userManager, IEmailSender emailSender, IOptions<JWTDTOs> jwt)
         {
-            return "User registered successfully. Check your email to confirm.";
+            _userManager = userManager;
+            _emailSender = emailSender;
+            _jwt = jwt.Value;
         }
 
-        throw new Exception(string.Join("; ", result.Errors.Select(e => e.Description)));
-    }
+        public async Task<string> RegisterAsync(ApplicationUser user, string Password)
+        {
+            var result = await _userManager.CreateAsync(user, Password);
+            if (result.Succeeded)
+            {
+                return "User registered successfully. Check your email to confirm.";
+            }
 
-    // ---------------- Forget Password ----------------
+            throw new Exception(string.Join("; ", result.Errors.Select(e => e.Description)));
+        }
 
-    public async Task<string> ForgetPasswordAsync(ForgetPasswordDTO dto)
-    {
-        var user = await _userManager.FindByEmailAsync(dto.Email!);
+        // ---------------- Forget Password ----------------
 
-        if (user is null)
-            throw new Exception("There is no user with this Email");
+        public async Task<string> ForgetPasswordAsync(ForgetPasswordDTO dto)
+        {
+            var user = await _userManager.FindByEmailAsync(dto.Email!);
 
-        var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-        var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
+            if (user is null)
+                throw new Exception("There is no user with this Email");
 
-        var param = new Dictionary<string, string?>()
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
+
+            var param = new Dictionary<string, string?>()
         {
             { "token", encodedToken },
             { "email", dto.Email! }
         };
 
-        var callBack = QueryHelpers.AddQueryString(dto.ClientUri!, param);
+            var callBack = QueryHelpers.AddQueryString(dto.ClientUri!, param);
 
-        var html = $@"<html> ... HTML ... </html>";
+            var html = $@"<html> ... HTML ... </html>";
 
-        var message = new Message([dto.Email!], "Reset your Password", html);
+            var message = new Message([dto.Email!], "Reset your Password", html);
 
-        await _emailSender.SendEmailAsync(message);
+            await _emailSender.SendEmailAsync(message);
 
-        return "Email was sent successfully";
-    }
+            return "Email was sent successfully";
+        }
 
-    public async Task<string> ResetPasswordAsync(ResetPasswordDTO resetPasswordDTO)
-    {
-        var user = await _userManager.FindByEmailAsync(resetPasswordDTO.Email!);
+        public async Task<string> ResetPasswordAsync(ResetPasswordDTO resetPasswordDTO)
+        {
+            var user = await _userManager.FindByEmailAsync(resetPasswordDTO.Email!);
 
-        if (user is null)
-            throw new Exception("There is no user with this Email");
+            if (user is null)
+                throw new Exception("There is no user with this Email");
 
-        var decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(resetPasswordDTO.Token!));
+            var decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(resetPasswordDTO.Token!));
 
-        var result = await _userManager.ResetPasswordAsync(user, decodedToken, resetPasswordDTO.Password!);
+            var result = await _userManager.ResetPasswordAsync(user, decodedToken, resetPasswordDTO.Password!);
 
-        if (result.Succeeded)
-            return "Password has been reset successfully";
+            if (result.Succeeded)
+                return "Password has been reset successfully";
 
-        throw new Exception(string.Join("; ", result.Errors.Select(e => e.Description)));
-    }
+            throw new Exception(string.Join("; ", result.Errors.Select(e => e.Description)));
+        }
 
-    // ---------------- Login ----------------
+        // ---------------- Login ----------------
 
-    public async Task<AuthDTOs> LoginAsync(LoginDTOs loginDTOs)
-    {
-        var user = await _userManager.FindByEmailAsync(loginDTOs.Email);
+        public async Task<AuthDTOs> LoginAsync(LoginDTOs loginDTOs)
+        {
+            var user = await _userManager.FindByEmailAsync(loginDTOs.Email);
 
-        if (user is null || !await _userManager.CheckPasswordAsync(user, loginDTOs.Password))
-            return new AuthDTOs { Message = "Invalid Email or Password!" };
+            if (user is null || !await _userManager.CheckPasswordAsync(user, loginDTOs.Password))
+                return new AuthDTOs { Message = "Invalid Email or Password!" };
 
-        return await GenerateTokenAsync(user);
-    }
+            return await GenerateTokenAsync(user);
+        }
 
-    private async Task<AuthDTOs> GenerateTokenAsync(ApplicationUser user)
-    {
-        var roles = await _userManager.GetRolesAsync(user);
+        private async Task<AuthDTOs> GenerateTokenAsync(ApplicationUser user)
+        {
+            var roles = await _userManager.GetRolesAsync(user);
 
-        var claims = new List<Claim>
+            var claims = new List<Claim>
         {
             new Claim(ClaimTypes.Email, user.Email),
             new Claim(ClaimTypes.NameIdentifier, user.Id)
         };
 
-        claims.AddRange(roles.Select(role => new Claim("role", role)));
+            claims.AddRange(roles.Select(role => new Claim("role", role)));
 
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwt.Key));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwt.Key));
 
-        var token = new JwtSecurityToken(
-            issuer: _jwt.Issuer,
-            audience: _jwt.Audience,
-            claims: claims,
-            expires: DateTime.UtcNow.AddDays(_jwt.DurationInDays),
-            signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256)
-        );
+            var token = new JwtSecurityToken(
+                issuer: _jwt.Issuer,
+                audience: _jwt.Audience,
+                claims: claims,
+                expires: DateTime.UtcNow.AddDays(_jwt.DurationInDays),
+                signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256)
+            );
 
-        return new AuthDTOs
-        {
-            Email = user.Email,
-            Username = user.UserName,
-            Token = new JwtSecurityTokenHandler().WriteToken(token),
-            Roles = roles.ToList(),
-            IsAuthenticated = true,
-            ExpiresOn = token.ValidTo
-        };
+            return new AuthDTOs
+            {
+                Email = user.Email,
+                Username = user.UserName,
+                Token = new JwtSecurityTokenHandler().WriteToken(token),
+                Roles = roles.ToList(),
+                IsAuthenticated = true,
+                ExpiresOn = token.ValidTo
+            };
+        }
     }
 }

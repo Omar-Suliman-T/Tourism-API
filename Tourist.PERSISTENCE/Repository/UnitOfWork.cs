@@ -21,8 +21,7 @@ namespace Tourist.PERSISTENCE.Repository
         public UnitOfWork(UserManager<ApplicationUser> userManager, IEmailSender emailSender,IOptions<JWTDTOs> jwt) { 
             _userManager = userManager;
             _emailSender = emailSender;
-            Auth = new AuthRepository(_userManager, _emailSender);
-            Auth = new AuthRepository(_userManager,jwt);
+            Auth = new AuthRepository(_userManager, _emailSender, jwt);
 
         }
         public IAuth Auth { get; private set; }

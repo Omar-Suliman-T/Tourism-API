@@ -43,8 +43,9 @@ namespace Tourist.API.Controllers
             if (!result.IsAuthenticated)
                 return BadRequest(result.Message);
 
-            
+            return Ok(result);
+        }
+
+
     }
-
-
 }
