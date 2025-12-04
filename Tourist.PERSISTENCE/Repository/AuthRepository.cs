@@ -22,7 +22,7 @@ namespace Tourist.PERSISTENCE.Repository
 
         public async Task<(HttpStatusCode, string)> ChangePasswodAsync(ClaimsPrincipal claims, ChangePasswordRequestDTO request)
         {
-            //var transaction = _context.Database.BeginTransaction();
+            
             try
             {
                 var userId = claims.FindFirst(ClaimTypes.NameIdentifier)?.Value;
