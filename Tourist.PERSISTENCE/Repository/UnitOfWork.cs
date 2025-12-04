@@ -1,10 +1,13 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Tourist.APPLICATION.DTO.Auth;
 using Tourist.APPLICATION.Interface;
+using Tourist.APPLICATION.Service.EmailService;
 using Tourist.DOMAIN.model;
 
 namespace Tourist.PERSISTENCE.Repository
@@ -12,11 +15,22 @@ namespace Tourist.PERSISTENCE.Repository
     public class UnitOfWork : IUnitOfWork
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        //private readonly ApplicationDbContext _context;
-        public UnitOfWork(UserManager<ApplicationUser> userManager) { 
+        private readonly IEmailSender _emailSender;
+        private readonly JWTDTOs _jwt;
+
+        public UnitOfWork(
+            UserManager<ApplicationUser> userManager, 
+            IEmailSender emailSender,
+            IOptions<JWTDTOs> jwt)
+        {
             _userManager = userManager;
-            Auth = new AuthRepository(_userManager);
+            _emailSender = emailSender;
+            _jwt = jwt.Value;
+
+            // إنشاء AuthRepository بشكل صحيح
+            Auth = new AuthRepository(_userManager, _emailSender, Options.Create(_jwt));
         }
+
         public IAuth Auth { get; private set; }
 
         public Task<int> CompleteAsync()
