@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net;
 using System.Security.Claims;
@@ -44,6 +45,7 @@ namespace Tourist.PERSISTENCE.Repository
         // ---------------- Change Password ----------------
         public async Task<(HttpStatusCode, string)> ChangePasswordAsync(ClaimsPrincipal claims, ChangePasswordRequestDTO request)
         {
+
             try
             {
                 var userId = claims.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -152,6 +154,11 @@ namespace Tourist.PERSISTENCE.Repository
                 IsAuthenticated = true,
                 ExpiresOn = token.ValidTo
             };
+        }
+
+        public Task<(HttpStatusCode, string)> ChangePasswodAsync(ClaimsPrincipal User, ChangePasswordRequestDTO request)
+        {
+            throw new NotImplementedException();
         }
     }
 }
