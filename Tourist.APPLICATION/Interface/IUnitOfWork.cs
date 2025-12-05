@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace Tourist.APPLICATION.Interface
 {
-    public interface IUnitOfWork: IDisposable
+    public interface IUnitOfWork:IDisposable
     {
         IAuth Auth { get; }
         Task<int> CompleteAsync();
+        public Task SaveChangesAsync();
     }
 }
