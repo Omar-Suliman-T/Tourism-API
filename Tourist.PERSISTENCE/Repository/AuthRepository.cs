@@ -89,6 +89,7 @@ namespace Tourist.PERSISTENCE.Repository
         // ---------------- Change Password ----------------
         public async Task<(HttpStatusCode, string)> ChangePasswordAsync(ClaimsPrincipal claims, ChangePasswordRequestDTO request)
         {
+
             try
             {
                 if (claims == null) return (HttpStatusCode.BadRequest, "Invalid user claims");
@@ -222,6 +223,11 @@ namespace Tourist.PERSISTENCE.Repository
                 IsAuthenticated = true,
                 ExpiresOn = token.ValidTo
             };
+        }
+
+        public Task<(HttpStatusCode, string)> ChangePasswodAsync(ClaimsPrincipal User, ChangePasswordRequestDTO request)
+        {
+            throw new NotImplementedException();
         }
     }
 }
