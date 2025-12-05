@@ -16,14 +16,24 @@ namespace Tourist.PERSISTENCE.Repository
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IEmailSender _emailSender;
+        private readonly JWTDTOs _jwt;
 
-
-        public UnitOfWork(UserManager<ApplicationUser> userManager, IEmailSender emailSender,IOptions<JWTDTOs> jwt) { 
+        public UnitOfWork(
+            UserManager<ApplicationUser> userManager, 
+            IEmailSender emailSender,
+            IOptions<JWTDTOs> jwt)
+        {
             _userManager = userManager;
             _emailSender = emailSender;
+
             Auth = new AuthRepository(_userManager, _emailSender, jwt);
 
+            _jwt = jwt.Value;
+
+            // إنشاء AuthRepository بشكل صحيح
+            Auth = new AuthRepository(_userManager, _emailSender, Options.Create(_jwt));
         }
+
         public IAuth Auth { get; private set; }
 
         public Task<int> CompleteAsync()

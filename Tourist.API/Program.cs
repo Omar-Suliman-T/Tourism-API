@@ -33,8 +33,12 @@ namespace Tourist.API
             builder.Services.AddScoped<ForgetPasswordUseCase>();
             builder.Services.AddScoped<ResetPasswordUseCase>();
             builder.Services.AddScoped<RegisterMap>();
+
+            builder.Services.AddScoped<ChangePasswordUseCase>();
+
             builder.Services.AddScoped<LoginUseCase>();
             builder.Services.AddScoped<LoginMap>();
+
 
             var ConnectionString = builder.Configuration.GetConnectionString("Tour");
 
@@ -65,6 +69,7 @@ namespace Tourist.API
             {
                 options.SaveToken = true;
                 options.RequireHttpsMetadata = false;
+                
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
