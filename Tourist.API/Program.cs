@@ -23,7 +23,7 @@ namespace Tourist.API
             builder.Services.AddScoped<RegisterUseCase>();
             builder.Services.AddScoped<RegisterMap>();
 
-            var ConnectionString = builder.Configuration.GetConnectionString("Tour");
+            var ConnectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(ConnectionString));
