@@ -225,9 +225,6 @@ namespace Tourist.PERSISTENCE.Repository
             };
         }
 
-        public Task<(HttpStatusCode, string)> ChangePasswodAsync(ClaimsPrincipal User, ChangePasswordRequestDTO request)
-        {
-            throw new NotImplementedException();
-        }
+      
     }
 }
