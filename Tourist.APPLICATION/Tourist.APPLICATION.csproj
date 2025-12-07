@@ -7,7 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Template\" />
+    <None Remove="Template\Email.html" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Template\Email.html" />
   </ItemGroup>
 
 	<ItemGroup>

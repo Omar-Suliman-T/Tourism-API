@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -141,13 +142,19 @@ namespace Tourist.PERSISTENCE.Repository
 
             var callBack = QueryHelpers.AddQueryString(dto.ClientUri!, param);
 
-            // You can replace the html below with your real template
-            var html = $@"<html>
-                                <body>
-                                    <p>Reset your password by clicking the link below:</p>
-                                    <a href=""{callBack}"">Reset Password</a>
-                                </body>
-                            </html>";
+            #region Read Html file
+            var assembly = Assembly.Load("Tourist.APPLICATION");
+            using var stream = assembly.GetManifestResourceStream("Tourist.APPLICATION.Template.Email.html");
+
+            if (stream == null) throw new Exception("stream file of Email template is not correct");
+
+            using var reader = new StreamReader(stream);
+            var htmlTemplate = await reader.ReadToEndAsync();
+            #endregion
+
+
+
+            var html = htmlTemplate.Replace("{{CallbackUrl}}", callBack);
 
             var message = new Message(new[] { dto.Email! }, "Reset your Password", html);
 

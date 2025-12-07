@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
+using System.Reflection;
 using System.Text;
 using Tourist.API.Middleware;
 using Tourist.APPLICATION.DTO.Auth;
