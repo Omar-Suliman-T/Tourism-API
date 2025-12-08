@@ -13,5 +13,7 @@ namespace Tourist.APPLICATION.DTO.Auth
         public string Email { get; set; }
         [Required]
         public string Password { get; set; }
+        public string? ClientUri { get; set; }
+
     }
 }

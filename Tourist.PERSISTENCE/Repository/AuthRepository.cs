@@ -73,20 +73,74 @@ namespace Tourist.PERSISTENCE.Repository
         }
 
         // ---------------- Register ----------------
-        public async Task<string> RegisterAsync(ApplicationUser user, string password)
+        public async Task<string> RegisterAsync(ApplicationUser user, string password, string clientUri)
         {
             if (user == null) throw new ArgumentNullException(nameof(user));
             if (string.IsNullOrWhiteSpace(password)) throw new ArgumentException("Password is required", nameof(password));
 
             var result = await _userManager.CreateAsync(user, password);
-            if (result.Succeeded)
+            if (!result.Succeeded)
             {
-                return "User registered successfully. Check your email to confirm.";
+                throw new Exception(string.Join("; ", result.Errors.Select(e => e.Description)));
             }
 
-            throw new Exception(string.Join("; ", result.Errors.Select(e => e.Description)));
+            await SendConfirmationEmailAsync(user, clientUri);
+            return "User registered successfully. Check your email to confirm.";
         }
 
+        public async Task SendConfirmationEmailAsync(ApplicationUser user, string clientUri)
+        {
+            if (user == null) throw new ArgumentNullException(nameof(user));
+            if (string.IsNullOrWhiteSpace(clientUri)) throw new ArgumentException("clientUri is required", nameof(clientUri));
+
+            var newUser = await _userManager.FindByEmailAsync(user.Email!);
+            if (newUser == null) throw new ArgumentNullException(nameof(user));
+
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(newUser!);
+            var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
+
+            var param = new Dictionary<string, string?>
+            {
+                { "token", encodedToken },
+                { "email", newUser.Email! }
+            };
+            var callBack = QueryHelpers.AddQueryString(clientUri!, param);
+
+            #region Read Html file
+            var assembly = Assembly.Load("Tourist.APPLICATION");
+            using var stream = assembly.GetManifestResourceStream("Tourist.APPLICATION.Template.ConfirmEmail.html");
+
+            if (stream == null) throw new Exception("stream file of Email template is not correct");
+
+            using var reader = new StreamReader(stream);
+            var htmlTemplate = await reader.ReadToEndAsync();
+            #endregion
+
+            var html = htmlTemplate.Replace("{{CallbackUrl}}", callBack);
+
+            var message = new Message(new[] { newUser.Email! }, "Confirm your Email", html);
+
+            await _emailSender.SendEmailAsync(message);
+        }
+
+        public async Task<string> ConfirmEmailAsync(ConfirmEmailDTO confirmEmailDTO)
+        {
+            if (confirmEmailDTO == null) throw new ArgumentNullException(nameof(confirmEmailDTO));
+            if (string.IsNullOrWhiteSpace(confirmEmailDTO.Email)) throw new ArgumentException("Email is required", nameof(confirmEmailDTO.Email));
+            if (string.IsNullOrWhiteSpace(confirmEmailDTO.Token)) throw new ArgumentException("Token is required", nameof(confirmEmailDTO.Token));
+
+            var user = await _userManager.FindByEmailAsync(confirmEmailDTO.Email!);
+            if (user == null) throw new ArgumentNullException(nameof(user));
+
+            var decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(confirmEmailDTO.Token!));
+            
+            var result = await _userManager.ConfirmEmailAsync(user, decodedToken);
+
+            if (result.Succeeded)
+                return "Email was confirmed successfully";        
+            else
+                throw new Exception("Email or token sent is incorrect");
+        }
         // ---------------- Change Password ----------------
         public async Task<(HttpStatusCode, string)> ChangePasswordAsync(ClaimsPrincipal claims, ChangePasswordRequestDTO request)
         {
@@ -144,15 +198,13 @@ namespace Tourist.PERSISTENCE.Repository
 
             #region Read Html file
             var assembly = Assembly.Load("Tourist.APPLICATION");
-            using var stream = assembly.GetManifestResourceStream("Tourist.APPLICATION.Template.Email.html");
+            using var stream = assembly.GetManifestResourceStream("Tourist.APPLICATION.Template.ResetEmail.html");
 
             if (stream == null) throw new Exception("stream file of Email template is not correct");
 
             using var reader = new StreamReader(stream);
             var htmlTemplate = await reader.ReadToEndAsync();
             #endregion
-
-
 
             var html = htmlTemplate.Replace("{{CallbackUrl}}", callBack);
 
@@ -187,6 +239,8 @@ namespace Tourist.PERSISTENCE.Repository
         public async Task<AuthDTOs> LoginAsync(LoginDTOs loginDTOs)
         {
             if (loginDTOs == null) throw new ArgumentNullException(nameof(loginDTOs));
+            if (string.IsNullOrWhiteSpace(loginDTOs.ClientUri)) throw new ArgumentException("clientUri is required", nameof(loginDTOs.ClientUri));
+
             if (string.IsNullOrWhiteSpace(loginDTOs.Email) || string.IsNullOrWhiteSpace(loginDTOs.Password))
                 return new AuthDTOs { Message = "Invalid Email or Password!" };
 
@@ -194,9 +248,14 @@ namespace Tourist.PERSISTENCE.Repository
             if (user is null || !await _userManager.CheckPasswordAsync(user, loginDTOs.Password))
                 return new AuthDTOs { Message = "Invalid Email or Password!" };
 
+            if (!await _userManager.IsEmailConfirmedAsync(user))
+            {
+                await SendConfirmationEmailAsync(user, loginDTOs.ClientUri);
+                return new AuthDTOs { Message = "Email is not confirmed. Please check your inbox." };
+            }
             return await GenerateTokenAsync(user);
         }
-
+         
         // ---------------- Generate JWT ----------------
         private async Task<AuthDTOs> GenerateTokenAsync(ApplicationUser user)
         {

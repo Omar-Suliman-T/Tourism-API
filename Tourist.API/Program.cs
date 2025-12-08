@@ -33,6 +33,7 @@ namespace Tourist.API
             builder.Services.AddScoped<RegisterUseCase>();
             builder.Services.AddScoped<ForgetPasswordUseCase>();
             builder.Services.AddScoped<ResetPasswordUseCase>();
+            builder.Services.AddScoped <ConfirmEmailUseCase>();
             builder.Services.AddScoped<RegisterMap>();
 
             builder.Services.AddScoped<ChangePasswordUseCase>();

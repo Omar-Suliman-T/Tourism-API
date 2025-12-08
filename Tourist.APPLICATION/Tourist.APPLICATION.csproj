@@ -7,11 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Template\Email.html" />
+    <None Remove="Template\ConfirmEmail.html" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Template\Email.html" />
+    <EmbeddedResource Include="Template\ConfirmEmail.html" />
+    <EmbeddedResource Include="Template\ResetEmail.html" />
   </ItemGroup>
 
 	<ItemGroup>
