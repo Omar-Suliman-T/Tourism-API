@@ -7,8 +7,7 @@ using Tourist.DOMAIN.model;
 
 namespace Tourist.APPLICATION.Interface
 {
-    public interface ITripRepository:IRepository<Trip>
+    public interface ICategoryRepository:IRepository<Category>
     {
-        
     }
 }

@@ -8,10 +8,10 @@ using Tourist.DOMAIN.model;
 
 namespace Tourist.PERSISTENCE.Repository
 {
-    public class HotelRepository : Repository<Hotel>, IHotelRepository
+    public class CategoryRepository : Repository<Category>, ICategoryRepository
     {
         private readonly ApplicationDbContext _context;
-        public HotelRepository(ApplicationDbContext context) : base(context)
+        public CategoryRepository(ApplicationDbContext context) : base(context)
         {
             _context = context;
         }
