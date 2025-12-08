@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using NETCore.MailKit.Core;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -23,17 +24,60 @@ namespace Tourist.PERSISTENCE.Repository
         private readonly JWTDTOs _jwt;
         private readonly IEmailSender _emailSender;
 
-        public AuthRepository(UserManager<ApplicationUser> userManager, IEmailSender emailSender, IOptions<JWTDTOs> jwt)
+        public AuthRepository(
+            UserManager<ApplicationUser> userManager,
+            IEmailSender emailSender,
+            IOptions<JWTDTOs> jwt)
         {
-            _userManager = userManager;
-            _emailSender = emailSender;
-            _jwt = jwt.Value;
+            _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
+            _emailSender = emailSender ?? throw new ArgumentNullException(nameof(emailSender));
+            _jwt = jwt?.Value ?? throw new ArgumentNullException(nameof(jwt));
+        }
+        public async Task<(HttpStatusCode, string)> ChangePasswodAsync(ClaimsPrincipal claims, ChangePasswordRequestDTO request)
+        {
+            //var transaction = _context.Database.BeginTransaction();
+            try
+            {
+                var userId = claims.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (userId == null)
+                {
+                    return (HttpStatusCode.BadRequest, "User not authenticated");
+                }
+                var user = await _userManager.FindByIdAsync(userId);
+                if (user == null)
+                {
+                    return (HttpStatusCode.BadRequest, "User Not ound");
+                }
+                var isChecked = await _userManager.CheckPasswordAsync(user!, request.CurrentPassword);
+                if (!isChecked)
+                {
+                    return (HttpStatusCode.BadRequest, "Password is wrong");
+                }
+                var result = await _userManager.ChangePasswordAsync(user, request.CurrentPassword, request.NewPassword);
+                if (result.Succeeded)
+                {
+                    return (HttpStatusCode.OK, "Password Changed successfully");
+
+                }
+                else
+                {
+                    return (HttpStatusCode.BadRequest, "something is wrong");
+                }
+            }
+            catch (Exception ex)
+            {
+                //await transaction.RollbackAsync();
+                return (HttpStatusCode.InternalServerError, ex.Message);
+            }
         }
 
         // ---------------- Register ----------------
-        public async Task<string> RegisterAsync(ApplicationUser user, string Password)
+        public async Task<string> RegisterAsync(ApplicationUser user, string password)
         {
-            var result = await _userManager.CreateAsync(user, Password);
+            if (user == null) throw new ArgumentNullException(nameof(user));
+            if (string.IsNullOrWhiteSpace(password)) throw new ArgumentException("Password is required", nameof(password));
+
+            var result = await _userManager.CreateAsync(user, password);
             if (result.Succeeded)
             {
                 return "User registered successfully. Check your email to confirm.";
@@ -48,8 +92,11 @@ namespace Tourist.PERSISTENCE.Repository
 
             try
             {
+                if (claims == null) return (HttpStatusCode.BadRequest, "Invalid user claims");
+                if (request == null) return (HttpStatusCode.BadRequest, "Invalid request");
+
                 var userId = claims.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                if (userId == null)
+                if (string.IsNullOrEmpty(userId))
                     return (HttpStatusCode.BadRequest, "User not authenticated");
 
                 var user = await _userManager.FindByIdAsync(userId);
@@ -64,7 +111,7 @@ namespace Tourist.PERSISTENCE.Repository
                 if (result.Succeeded)
                     return (HttpStatusCode.OK, "Password changed successfully");
 
-                return (HttpStatusCode.BadRequest, "Something went wrong");
+                return (HttpStatusCode.BadRequest, string.Join("; ", result.Errors.Select(e => e.Description)));
             }
             catch (Exception ex)
             {
@@ -75,6 +122,10 @@ namespace Tourist.PERSISTENCE.Repository
         // ---------------- Forget Password ----------------
         public async Task<string> ForgetPasswordAsync(ForgetPasswordDTO dto)
         {
+            if (dto == null) throw new ArgumentNullException(nameof(dto));
+            if (string.IsNullOrWhiteSpace(dto.Email)) throw new ArgumentException("Email is required", nameof(dto.Email));
+            if (string.IsNullOrWhiteSpace(dto.ClientUri)) throw new ArgumentException("ClientUri is required", nameof(dto.ClientUri));
+
             var user = await _userManager.FindByEmailAsync(dto.Email!);
             if (user is null)
                 throw new Exception("There is no user with this Email");
@@ -82,7 +133,7 @@ namespace Tourist.PERSISTENCE.Repository
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
             var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
 
-            var param = new Dictionary<string, string?>()
+            var param = new Dictionary<string, string?>
             {
                 { "token", encodedToken },
                 { "email", dto.Email! }
@@ -90,7 +141,14 @@ namespace Tourist.PERSISTENCE.Repository
 
             var callBack = QueryHelpers.AddQueryString(dto.ClientUri!, param);
 
-            var html = $@"<html> ... HTML ... </html>";
+            // You can replace the html below with your real template
+            var html = $@"<html>
+                                <body>
+                                    <p>Reset your password by clicking the link below:</p>
+                                    <a href=""{callBack}"">Reset Password</a>
+                                </body>
+                            </html>";
+
             var message = new Message(new[] { dto.Email! }, "Reset your Password", html);
 
             await _emailSender.SendEmailAsync(message);
@@ -101,6 +159,10 @@ namespace Tourist.PERSISTENCE.Repository
         // ---------------- Reset Password ----------------
         public async Task<string> ResetPasswordAsync(ResetPasswordDTO resetPasswordDTO)
         {
+            if (resetPasswordDTO == null) throw new ArgumentNullException(nameof(resetPasswordDTO));
+            if (string.IsNullOrWhiteSpace(resetPasswordDTO.Email)) throw new ArgumentException("Email is required", nameof(resetPasswordDTO.Email));
+            if (string.IsNullOrWhiteSpace(resetPasswordDTO.Token)) throw new ArgumentException("Token is required", nameof(resetPasswordDTO.Token));
+
             var user = await _userManager.FindByEmailAsync(resetPasswordDTO.Email!);
             if (user is null)
                 throw new Exception("There is no user with this Email");
@@ -117,6 +179,10 @@ namespace Tourist.PERSISTENCE.Repository
         // ---------------- Login ----------------
         public async Task<AuthDTOs> LoginAsync(LoginDTOs loginDTOs)
         {
+            if (loginDTOs == null) throw new ArgumentNullException(nameof(loginDTOs));
+            if (string.IsNullOrWhiteSpace(loginDTOs.Email) || string.IsNullOrWhiteSpace(loginDTOs.Password))
+                return new AuthDTOs { Message = "Invalid Email or Password!" };
+
             var user = await _userManager.FindByEmailAsync(loginDTOs.Email);
             if (user is null || !await _userManager.CheckPasswordAsync(user, loginDTOs.Password))
                 return new AuthDTOs { Message = "Invalid Email or Password!" };
@@ -131,18 +197,21 @@ namespace Tourist.PERSISTENCE.Repository
 
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Email, user.Email ?? string.Empty),
                 new Claim(ClaimTypes.NameIdentifier, user.Id)
             };
-            claims.AddRange(roles.Select(role => new Claim("role", role)));
+
+            claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwt.Key));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
             var token = new JwtSecurityToken(
                 issuer: _jwt.Issuer,
                 audience: _jwt.Audience,
                 claims: claims,
                 expires: DateTime.UtcNow.AddDays(_jwt.DurationInDays),
-                signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256)
+                signingCredentials: creds
             );
 
             return new AuthDTOs

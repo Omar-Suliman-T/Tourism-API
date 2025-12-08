@@ -69,6 +69,7 @@ namespace Tourist.API
             {
                 options.SaveToken = true;
                 options.RequireHttpsMetadata = false;
+                
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
