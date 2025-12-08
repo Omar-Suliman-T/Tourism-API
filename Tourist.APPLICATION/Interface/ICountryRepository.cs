@@ -3,14 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Tourist.DOMAIN.model;
 
 namespace Tourist.APPLICATION.Interface
 {
-    public interface IUnitOfWork:IDisposable
+    public interface ICountryRepository : IRepository<Country>
     {
-        IAuth Auth { get; }
-
-        Task<int> CompleteAsync();
-        public Task SaveChangesAsync();
     }
 }

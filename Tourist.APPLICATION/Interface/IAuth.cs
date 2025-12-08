@@ -16,7 +16,6 @@ namespace Tourist.APPLICATION.Interface
 
         Task<(HttpStatusCode, string)> ChangePasswordAsync(ClaimsPrincipal User, ChangePasswordRequestDTO request);
 
-
         Task<string> ForgetPasswordAsync(ForgetPasswordDTO forgetPasswordDTO);
         Task<string> ResetPasswordAsync(ResetPasswordDTO resetPasswordDTO);
 
