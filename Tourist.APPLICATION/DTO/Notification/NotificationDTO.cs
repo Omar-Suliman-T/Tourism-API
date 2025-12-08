@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Tourist.DOMAIN.model;
 
-namespace Tourist.APPLICATION.Interface
+namespace Tourist.APPLICATION.DTO.Notification
 {
-    public interface ITripRepository:IRepository<Trip>
+    public class NotificationDTO
     {
-        
     }
 }
