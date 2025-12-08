@@ -9,6 +9,7 @@ namespace Tourist.APPLICATION.Interface
     public interface IUnitOfWork:IDisposable
     {
         IAuth Auth { get; }
+        IUser User { get; }
         Task<int> CompleteAsync();
         public Task SaveChangesAsync();
     }

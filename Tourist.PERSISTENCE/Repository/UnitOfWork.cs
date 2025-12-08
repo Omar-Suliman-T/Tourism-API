@@ -29,7 +29,7 @@ namespace Tourist.PERSISTENCE.Repository
             _emailSender = emailSender;
 
             Auth = new AuthRepository(_userManager, _emailSender, jwt);
-
+            User = new UserRepository(context);
             _jwt = jwt.Value;
 
             // إنشاء AuthRepository بشكل صحيح
@@ -38,6 +38,7 @@ namespace Tourist.PERSISTENCE.Repository
         }
 
         public IAuth Auth { get; private set; }
+        public IUser User { get; private set; }
 
         public Task<int> CompleteAsync()
         {
