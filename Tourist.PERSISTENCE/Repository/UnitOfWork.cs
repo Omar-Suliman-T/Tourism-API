@@ -18,6 +18,12 @@ namespace Tourist.PERSISTENCE.Repository
         private readonly IEmailSender _emailSender;
         private readonly JWTDTOs _jwt;
         private readonly ApplicationDbContext _context;
+        public ICountryRepository Country { get; private set; }
+        public ICityRepository City { get; private set; }
+        public IPlaceRepository Place { get; private set; }
+        public IHotelRepository Hotel { get; private set; }
+        public ITripRepository Trip { get; private set; }
+        public IPaymentRepository Payment { get; private set; }
 
         public UnitOfWork(
             UserManager<ApplicationUser> userManager, 
@@ -27,17 +33,23 @@ namespace Tourist.PERSISTENCE.Repository
         {
             _userManager = userManager;
             _emailSender = emailSender;
-
-            Auth = new AuthRepository(_userManager, _emailSender, jwt);
-
+            _context = context;
             _jwt = jwt.Value;
 
             // إنشاء AuthRepository بشكل صحيح
             Auth = new AuthRepository(_userManager, _emailSender, Options.Create(_jwt));
+            Country = new CountryRepository(_context);
+            City = new CityRepository(_context);
+            Place = new PlaceRepository(_context);
+            Hotel= new HotelRepository(_context);
+            Payment = new PaymentRepository(_context);
+            Trip =new TripRepository(_context);
             _context = context;
         }
 
         public IAuth Auth { get; private set; }
+
+       
 
         public Task<int> CompleteAsync()
         {
