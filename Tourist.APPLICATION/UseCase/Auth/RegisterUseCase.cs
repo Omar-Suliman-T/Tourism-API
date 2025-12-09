@@ -25,7 +25,7 @@ namespace Tourist.APPLICATION.UseCase.Auth
         public async Task<string> ExecuteAsync(RegisterDTOs registerDTOs)
         {
             var user = _registerMap.ToRegister(registerDTOs);
-            return await _unitOfWork.Auth.RegisterAsync(user, registerDTOs.Password);
+            return await _unitOfWork.Auth.RegisterAsync(user, registerDTOs.Password, registerDTOs.ClientUri);
              
         }
 
