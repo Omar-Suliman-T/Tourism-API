@@ -7,7 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Template\" />
+    <None Remove="Template\ConfirmEmail.html" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Template\ConfirmEmail.html" />
+    <EmbeddedResource Include="Template\ResetEmail.html" />
   </ItemGroup>
 
 	<ItemGroup>

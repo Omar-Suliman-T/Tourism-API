@@ -17,7 +17,7 @@ namespace Tourist.APPLICATION.UseCase.Auth
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<string> ResetPassword(ResetPasswordDTO resetPasswordDTO)
+        public async Task<string> ExecuteAsync(ResetPasswordDTO resetPasswordDTO)
         {
             return await _unitOfWork.Auth.ResetPasswordAsync(resetPasswordDTO);
         }

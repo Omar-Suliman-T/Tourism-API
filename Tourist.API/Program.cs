@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
+using System.Reflection;
 using System.Text;
 using Tourist.API.Middleware;
 using Tourist.APPLICATION.DTO.Auth;
@@ -32,6 +33,7 @@ namespace Tourist.API
             builder.Services.AddScoped<RegisterUseCase>();
             builder.Services.AddScoped<ForgetPasswordUseCase>();
             builder.Services.AddScoped<ResetPasswordUseCase>();
+            builder.Services.AddScoped <ConfirmEmailUseCase>();
             builder.Services.AddScoped<RegisterMap>();
 
             builder.Services.AddScoped<ChangePasswordUseCase>();

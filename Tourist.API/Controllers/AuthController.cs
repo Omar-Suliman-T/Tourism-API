@@ -19,6 +19,16 @@ namespace Tourist.API.Controllers
             return Ok(result);
         }
 
+        [HttpPost("Confirm-Email")]
+        public async Task<IActionResult> ConfirmEmail(
+            [FromBody] ConfirmEmailDTO confirmEmailDTO,
+            [FromServices] ConfirmEmailUseCase confirmEmailUseCase)
+        {
+            var result = await confirmEmailUseCase.ExecuteAsync(confirmEmailDTO);
+            return Ok(result);
+        }
+
+
         [HttpPost("change-password")]
         public async Task<ActionResult<string>> ChangePassword(
             [FromServices] ChangePasswordUseCase changePasswordUseCase,
@@ -37,7 +47,7 @@ namespace Tourist.API.Controllers
             [FromBody] ForgetPasswordDTO forgetPasswordDTO,
             [FromServices] ForgetPasswordUseCase forgetPasswordUseCase)
         {
-            var result = await forgetPasswordUseCase.ForgetPassword(forgetPasswordDTO);
+            var result = await forgetPasswordUseCase.ExecuteAsync(forgetPasswordDTO);
             return Ok(result);
         }
 
@@ -46,7 +56,7 @@ namespace Tourist.API.Controllers
             [FromBody] ResetPasswordDTO resetPasswordDTO,
             [FromServices] ResetPasswordUseCase resetPasswordUseCase)
         {
-            var result = await resetPasswordUseCase.ResetPassword(resetPasswordDTO);
+            var result = await resetPasswordUseCase.ExecuteAsync(resetPasswordDTO);
             return Ok(result);
         }
 
