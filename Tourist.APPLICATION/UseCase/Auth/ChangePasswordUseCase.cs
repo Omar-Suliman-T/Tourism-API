@@ -21,7 +21,7 @@ namespace Tourist.APPLICATION.UseCase.Auth
         }
         public async Task<(HttpStatusCode,string)> ExecuteAsync(ClaimsPrincipal claims,ChangePasswordRequestDTO changePasswordRequestDTO)
         {
-             (HttpStatusCode response,string result) = await _unitOfWork.Auth.ChangePasswodAsync(claims,changePasswordRequestDTO);
+             (HttpStatusCode response,string result) = await _unitOfWork.Auth.ChangePasswordAsync(claims,changePasswordRequestDTO);
             
             return (response,result);
         }

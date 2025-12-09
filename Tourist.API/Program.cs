@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
+using System.Reflection;
 using System.Text;
 using Tourist.API.Middleware;
 using Tourist.APPLICATION.DTO.Auth;
@@ -27,11 +28,12 @@ namespace Tourist.API
             var EmailConfig = builder.Configuration.GetSection("EmailConfiguration")
                 .Get<EmailCofiguration>();
             builder.Services.AddSingleton(EmailConfig);
-            builder.Services.AddScoped<IEmailSender,EmailSender>();
+            builder.Services.AddScoped<IEmailSender, EmailSender>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<RegisterUseCase>();
             builder.Services.AddScoped<ForgetPasswordUseCase>();
             builder.Services.AddScoped<ResetPasswordUseCase>();
+            builder.Services.AddScoped<ConfirmEmailUseCase>();
             builder.Services.AddScoped<RegisterMap>();
 
             builder.Services.AddScoped<ChangePasswordUseCase>();
@@ -48,6 +50,7 @@ namespace Tourist.API
             builder.Services.AddIdentityCore<ApplicationUser>(options =>
                 options.User.RequireUniqueEmail = true)
                 .AddRoles<IdentityRole>()
+                .AddSignInManager<SignInManager<ApplicationUser>>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
@@ -59,7 +62,9 @@ namespace Tourist.API
 
 
             builder.Services.Configure<JWTDTOs>(builder.Configuration.GetSection("JWT"));
-            builder.Services.AddAuthentication(options => {
+
+            builder.Services.AddAuthentication(options =>
+            {
                 //Check JWT Token Header
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 //[authrize]
@@ -69,7 +74,7 @@ namespace Tourist.API
             {
                 options.SaveToken = true;
                 options.RequireHttpsMetadata = false;
-                
+
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
@@ -82,6 +87,11 @@ namespace Tourist.API
 
                 };
             });
+            //.AddGoogle(options =>
+            //{
+            //    options.ClientId = builder.Configuration["Authentication:Google:ClientId"]!;
+            //    options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"]!;
+            //});
 
 
             builder.Services.AddControllers();
