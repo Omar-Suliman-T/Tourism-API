@@ -291,6 +291,5 @@ namespace Tourist.PERSISTENCE.Repository
             };
         }
 
-      
     }
 }
