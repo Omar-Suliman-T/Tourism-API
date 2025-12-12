@@ -147,6 +147,34 @@ namespace Tourist.PERSISTENCE.Repository
                 throw new Exception("Email or token sent is incorrect");
         }
 
+        /// <summary>
+        /// Handles Google One Tap login using an ID Token received from the frontend.
+        /// Validates the token, finds or creates the corresponding ApplicationUser,
+        /// and returns the authentication DTO with JWT tokens.
+        /// </summary>
+        /// <param name="googleLoginDTO">
+        /// DTO containing the ID Token from the frontend.
+        /// Expected format: JWT (string starting with "eyJ...").
+        /// Do NOT send access tokens or authorization codes.
+        /// </param>
+        /// <returns>
+        /// Returns an <see cref="AuthDTOs"/> object containing user tokens and info.
+        /// </returns>
+        /// <remarks>
+        /// Steps performed:
+        /// 1. Validate the ID Token using GoogleJsonWebSignature.ValidateAsync.
+        /// 2. Check if a user with the token's email exists:
+        ///    - If not, create a new ApplicationUser and add Google login info.
+        ///    - If yes, update GoogleId if missing and ensure login info exists.
+        /// 3. Generate JWT tokens for the user.
+        /// 
+        /// Important notes for maintenance:
+        /// - The frontend must send a valid ID Token from Google One Tap (JWT).
+        /// - The Web Client ID used in GoogleJsonWebSignature.ValidationSettings must match the client ID
+        ///   used in the frontend for One Tap.
+        /// - Access tokens or authorization codes are NOT accepted here.
+        /// - Any changes in Google Identity Services (One Tap) might require updating this flow.
+        /// </remarks>
         public async Task<AuthDTOs> GoogleAuth(GoogleLoginDTO googleLoginDTO)
         {
 
@@ -162,7 +190,7 @@ namespace Tourist.PERSISTENCE.Repository
             {
                 user = new ApplicationUser
                 {
-                    UserName = payload.Name,
+                    UserName = payload.Email,
                     Email = payload.Email,
                     EmailConfirmed = true,
                     GoogleId = payload.Subject,
