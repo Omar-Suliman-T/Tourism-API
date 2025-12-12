@@ -50,6 +50,7 @@ namespace Tourist.API
             builder.Services.AddIdentityCore<ApplicationUser>(options =>
                 options.User.RequireUniqueEmail = true)
                 .AddRoles<IdentityRole>()
+                .AddSignInManager<ApplicationUser>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
@@ -61,6 +62,7 @@ namespace Tourist.API
 
 
             builder.Services.Configure<JWTDTOs>(builder.Configuration.GetSection("JWT"));
+
             builder.Services.AddAuthentication(options => {
                 //Check JWT Token Header
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -83,6 +85,10 @@ namespace Tourist.API
                             Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]))
 
                 };
+            }).AddGoogle(options =>
+            {
+                options.ClientId = builder.Configuration["Authentication:Google:ClientId"]!;
+                options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"]!;
             });
 
 
