@@ -34,6 +34,7 @@ namespace Tourist.API
             builder.Services.AddScoped<ForgetPasswordUseCase>();
             builder.Services.AddScoped<ResetPasswordUseCase>();
             builder.Services.AddScoped <ConfirmEmailUseCase>();
+            builder.Services.AddScoped<GoogleAuthUseCase>();
             builder.Services.AddScoped<RegisterMap>();
 
             builder.Services.AddScoped<ChangePasswordUseCase>();
@@ -50,7 +51,6 @@ namespace Tourist.API
             builder.Services.AddIdentityCore<ApplicationUser>(options =>
                 options.User.RequireUniqueEmail = true)
                 .AddRoles<IdentityRole>()
-                .AddSignInManager<ApplicationUser>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 

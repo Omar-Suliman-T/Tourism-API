@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Google.Apis.Auth;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using NETCore.MailKit.Core;
@@ -24,14 +26,17 @@ namespace Tourist.PERSISTENCE.Repository
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly JWTDTOs _jwt;
         private readonly IEmailSender _emailSender;
+        private readonly IConfiguration _configuration;
 
         public AuthRepository(
             UserManager<ApplicationUser> userManager,
             IEmailSender emailSender,
+            IConfiguration configuration,
             IOptions<JWTDTOs> jwt)
         {
             _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
             _emailSender = emailSender ?? throw new ArgumentNullException(nameof(emailSender));
+            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             _jwt = jwt?.Value ?? throw new ArgumentNullException(nameof(jwt));
         }
         public async Task<(HttpStatusCode, string)> ChangePasswodAsync(ClaimsPrincipal claims, ChangePasswordRequestDTO request)
@@ -140,6 +145,61 @@ namespace Tourist.PERSISTENCE.Repository
                 return "Email was confirmed successfully";        
             else
                 throw new Exception("Email or token sent is incorrect");
+        }
+
+        public async Task<AuthDTOs> GoogleAuth(GoogleLoginDTO googleLoginDTO)
+        {
+
+            var payload = await GoogleJsonWebSignature.ValidateAsync(googleLoginDTO.IdToken,
+                new GoogleJsonWebSignature.ValidationSettings
+                {
+                    Audience = new[] { _configuration["Authentication:Google:ClientId"] }
+                });
+
+            var user = await _userManager.FindByEmailAsync(payload.Email);
+
+            if (user == null)
+            {
+                user = new ApplicationUser
+                {
+                    UserName = payload.Name,
+                    Email = payload.Email,
+                    EmailConfirmed = true,
+                    GoogleId = payload.Subject,
+                    ProfilePicture = payload.Picture,
+                    CreatedAt = DateTime.Now
+                };
+
+                var result = await _userManager.CreateAsync(user);
+
+                if (!result.Succeeded) return new AuthDTOs { Message = "Error with creating account with google" };
+
+                await _userManager.AddLoginAsync(user,new UserLoginInfo(
+                    "Google",
+                    payload.Subject,
+                    "Google"
+                ));
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(user.GoogleId))
+                {
+                    user.GoogleId = payload.Subject;
+                    await _userManager.UpdateAsync(user);
+
+                    var logins = await _userManager.GetLoginsAsync(user);
+                    if (!logins.Any(l => l.LoginProvider == "Google"))
+                    {
+                        await _userManager.AddLoginAsync(user, new UserLoginInfo(
+                            "Google",
+                            payload.Subject,
+                            "Google"
+                        ));
+                    }
+                }
+            }
+            return await GenerateTokenAsync(user);
+                
         }
         // ---------------- Change Password ----------------
         public async Task<(HttpStatusCode, string)> ChangePasswordAsync(ClaimsPrincipal claims, ChangePasswordRequestDTO request)

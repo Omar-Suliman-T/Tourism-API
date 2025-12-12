@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,7 @@ namespace Tourist.PERSISTENCE.Repository
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IEmailSender _emailSender;
+        private readonly IConfiguration _configuration;
         private readonly JWTDTOs _jwt;
         private readonly ApplicationDbContext _context;
         public ICountryRepository Country { get; private set; }
@@ -29,15 +31,17 @@ namespace Tourist.PERSISTENCE.Repository
             UserManager<ApplicationUser> userManager, 
             IEmailSender emailSender,
             IOptions<JWTDTOs> jwt,
+            IConfiguration configuration,
             ApplicationDbContext context)
         {
             _userManager = userManager;
             _emailSender = emailSender;
+            _configuration = configuration;
             _context = context;
             _jwt = jwt.Value;
 
             // إنشاء AuthRepository بشكل صحيح
-            Auth = new AuthRepository(_userManager, _emailSender, Options.Create(_jwt));
+            Auth = new AuthRepository(_userManager, _emailSender, _configuration, Options.Create(_jwt));
             Country = new CountryRepository(_context);
             City = new CityRepository(_context);
             Place = new PlaceRepository(_context);
