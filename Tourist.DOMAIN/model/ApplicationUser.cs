@@ -9,9 +9,7 @@ namespace Tourist.DOMAIN.model
 {
     public class ApplicationUser: IdentityUser
     {
-        public  string FirstName { get; set; } = string.Empty;
-        public string LastName { get; set; } = string.Empty;
-
+      
         public IEnumerable<Trip>? Trips { get; set; }
         public IEnumerable<Review>? Reviews { get; set; }
         public IEnumerable<Notification>? Notifications { get; set; }

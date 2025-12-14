@@ -33,8 +33,8 @@ namespace Tourist.API.Controllers
             var userDTOs = users.Select(u => new UserDTOs
             {
                 Id = u.Id,
-                FirstName = u.FirstName,
-                LastName = u.LastName,
+                //FirstName = u.FirstName,
+                //LastName = u.LastName,
                 Email = u.Email,
                 PhoneNumber = u.PhoneNumber
             }).ToList();
@@ -52,8 +52,8 @@ namespace Tourist.API.Controllers
             var userDTOs =  new UserDTOs
             {
                 Id = user.Id,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
+                //FirstName = user.FirstName,
+                //LastName = user.LastName,
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber
             };
@@ -72,8 +72,8 @@ namespace Tourist.API.Controllers
             var userDTOs = new UserDTOs
             {
                 Id = user.Id,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
+                //FirstName = user.FirstName,
+                //LastName = user.LastName,
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber
             };
@@ -92,8 +92,8 @@ namespace Tourist.API.Controllers
                 var user = await _unitOfWork.User.GetAsync(u => u.Id == id);
                 if (user == null) return NotFound("User not found.");
 
-                user.FirstName = dto.FirstName;
-                user.LastName = dto.LastName;
+                //user.FirstName = dto.FirstName;
+                //user.LastName = dto.LastName;
                 user.Email = dto.Email;
                 user.PhoneNumber = dto.PhoneNumber;
 
@@ -102,8 +102,8 @@ namespace Tourist.API.Controllers
                 var userDTO = new UserDTOs
                 {
                     Id = user.Id,
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
+                    //FirstName = user.FirstName,
+                    //LastName = user.LastName,
                     Email = user.Email,
                     PhoneNumber = user.PhoneNumber
                 };
