@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Tourist.DOMAIN.model.Shared;
 
 namespace Tourist.DOMAIN.model
 {  
@@ -22,7 +23,7 @@ namespace Tourist.DOMAIN.model
             Wallet = 3,
             BankTransfer = 4
         }
-    public class Payment
+    public class Payment: BaseEntity
     {
 
         public int PaymentId { get; set; }
