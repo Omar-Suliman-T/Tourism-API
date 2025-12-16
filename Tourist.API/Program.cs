@@ -59,8 +59,7 @@ namespace Tourist.API
             builder.Services.Configure<DataProtectionTokenProviderOptions>(opt =>
                 opt.TokenLifespan = TimeSpan.FromHours(2));
 
-
-
+            
             builder.Services.Configure<JWTDTOs>(builder.Configuration.GetSection("JWT"));
 
             builder.Services.AddAuthentication(options => {

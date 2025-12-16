@@ -15,6 +15,6 @@ namespace Tourist.DOMAIN.model
         public IEnumerable<Trip>? Trips { get; set; }
         public IEnumerable<Review>? Reviews { get; set; }
         public IEnumerable<Notification>? Notifications { get; set; }
-
+        public bool IsActive { get; set; }
     }
 }

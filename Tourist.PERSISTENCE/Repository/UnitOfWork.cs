@@ -52,6 +52,7 @@ namespace Tourist.PERSISTENCE.Repository
         }
 
         public IAuth Auth { get; private set; }
+        public IUser User { get; private set; }
 
        
 
