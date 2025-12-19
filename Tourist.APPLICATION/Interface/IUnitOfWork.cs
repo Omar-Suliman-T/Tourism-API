@@ -10,6 +10,7 @@ namespace Tourist.APPLICATION.Interface
     public interface IUnitOfWork:IDisposable
     {
         IAuth Auth { get; }
+        ICategoryRepository Category { get; }
         ICountryRepository Country{get;} 
         ICityRepository City{get;} 
         IPlaceRepository Place{get;}    

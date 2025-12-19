@@ -20,6 +20,8 @@ namespace Tourist.PERSISTENCE.Repository
         private readonly IConfiguration _configuration;
         private readonly JWTDTOs _jwt;
         private readonly ApplicationDbContext _context;
+
+        public ICategoryRepository Category { get; private set; }
         public ICountryRepository Country { get; private set; }
         public ICityRepository City { get; private set; }
         public IPlaceRepository Place { get; private set; }
@@ -42,6 +44,7 @@ namespace Tourist.PERSISTENCE.Repository
 
             // إنشاء AuthRepository بشكل صحيح
             Auth = new AuthRepository(_userManager, _emailSender, _configuration, Options.Create(_jwt));
+            Category = new CategoryRepository(_context);
             Country = new CountryRepository(_context);
             City = new CityRepository(_context);
             Place = new PlaceRepository(_context);
