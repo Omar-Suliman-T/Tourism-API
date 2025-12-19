@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Tourist.DOMAIN.model.Shared;
 
 namespace Tourist.DOMAIN.model
 {
@@ -15,7 +16,7 @@ namespace Tourist.DOMAIN.model
         Completed = 4,
         Cancelled = 5
     }
-    public class Trip
+    public class Trip: BaseEntity
     {
         public int TripId { get; set; }
         public double TotalPrice { get; set; }

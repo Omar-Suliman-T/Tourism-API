@@ -22,6 +22,7 @@ namespace Tourist.APPLICATION.Interface
 
         Task<AuthDTOs> LoginAsync(LoginDTOs loginDTOs);
 
+        Task<AuthDTOs> GoogleAuth(GoogleLoginDTO googleLoginDTO);
 
     }
 }

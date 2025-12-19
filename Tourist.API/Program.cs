@@ -12,6 +12,7 @@ using Tourist.APPLICATION.Interface;
 using Tourist.APPLICATION.Mapping.Auth;
 using Tourist.APPLICATION.Service.EmailService;
 using Tourist.APPLICATION.UseCase.Auth;
+using Tourist.APPLICATION.UseCase.Hotel;
 using Tourist.DOMAIN.model;
 using Tourist.PERSISTENCE;
 using Tourist.PERSISTENCE.Repository;
@@ -34,7 +35,9 @@ namespace Tourist.API
             builder.Services.AddScoped<ForgetPasswordUseCase>();
             builder.Services.AddScoped<ResetPasswordUseCase>();
             builder.Services.AddScoped<ConfirmEmailUseCase>();
+            builder.Services.AddScoped<GoogleAuthUseCase>();
             builder.Services.AddScoped<RegisterMap>();
+            builder.Services.AddScoped<HotelUseCase>();
 
             builder.Services.AddScoped<ChangePasswordUseCase>();
 
@@ -59,10 +62,8 @@ namespace Tourist.API
             builder.Services.Configure<DataProtectionTokenProviderOptions>(opt =>
                 opt.TokenLifespan = TimeSpan.FromHours(2));
 
-
-
+            
             builder.Services.Configure<JWTDTOs>(builder.Configuration.GetSection("JWT"));
-
             builder.Services.AddAuthentication(options =>
             {
                 //Check JWT Token Header

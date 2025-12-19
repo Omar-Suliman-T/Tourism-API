@@ -16,6 +16,7 @@ namespace Tourist.APPLICATION.Interface
         IHotelRepository Hotel{get;}      
         ITripRepository Trip{get;}      
         IPaymentRepository Payment{get;}    
+        IUser User { get; }
         Task<int> CompleteAsync();
         public Task SaveChangesAsync();
     }

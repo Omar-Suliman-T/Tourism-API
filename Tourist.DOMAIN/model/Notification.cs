@@ -4,10 +4,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Tourist.DOMAIN.model.Shared;
 
 namespace Tourist.DOMAIN.model
 {
-    public class Notification
+    public class Notification: BaseEntity
     {
         public int NotificationId { get; set; }
         public string? Message { get; set; }

@@ -19,7 +19,7 @@ namespace Tourist.API.Controllers
             return Ok(result);
         }
 
-        [HttpPost("Confirm-Email")]
+        [HttpPost("confirm-email")]
         public async Task<IActionResult> ConfirmEmail(
             [FromBody] ConfirmEmailDTO confirmEmailDTO,
             [FromServices] ConfirmEmailUseCase confirmEmailUseCase)
@@ -28,8 +28,24 @@ namespace Tourist.API.Controllers
             return Ok(result);
         }
 
+        [HttpPost("google")]
+        public async Task<IActionResult> GoogleAuth(
+            [FromBody] GoogleLoginDTO googleLoginDTO,
+            [FromServices] GoogleAuthUseCase googleAuthUseCase)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-        [HttpPost("change-password")]
+            var result = await googleAuthUseCase.ExcuteAsync(googleLoginDTO);
+
+            if (!result.IsAuthenticated)
+                return BadRequest(result.Message);
+
+            return Ok(result);
+
+        }
+
+        [HttpPost("Change-Password")]
         public async Task<ActionResult<string>> ChangePassword(
             [FromServices] ChangePasswordUseCase changePasswordUseCase,
             [FromBody] ChangePasswordRequestDTO changePasswordRequestDTO)

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
@@ -17,10 +18,12 @@ namespace Tourist.PERSISTENCE.Repository
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IEmailSender _emailSender;
+        private readonly IConfiguration _configuration;
         private readonly JWTDTOs _jwt;
         private readonly ILogger<UnitOfWork> _logger;
         private readonly ILoggerFactory _loggerFactory;
-        private readonly ApplicationDbContext _context;
+        public readonly ApplicationDbContext _context;
+
         public ICountryRepository Country { get; private set; }
         public ICityRepository City { get; private set; }
         public IPlaceRepository Place { get; private set; }
@@ -31,30 +34,31 @@ namespace Tourist.PERSISTENCE.Repository
         public UnitOfWork(
             UserManager<ApplicationUser> userManager, 
             IEmailSender emailSender,
+            IConfiguration configuration,
             IOptions<JWTDTOs> jwt,
-            ApplicationDbContext context,
             ILogger<UnitOfWork>logger,
-            ILoggerFactory loggerFactory)
+            ILoggerFactory loggerFactory,
+            ApplicationDbContext context)
         {
             _userManager = userManager;
             _emailSender = emailSender;
-            _context = context;
+            _configuration = configuration;
             _jwt = jwt.Value;
             _logger = logger;
             _loggerFactory = loggerFactory;
+            _context = context;
 
             // إنشاء AuthRepository بشكل صحيح
-            Auth = new AuthRepository(_userManager, _emailSender, Options.Create(_jwt),_loggerFactory.CreateLogger<AuthRepository>());
             Country = new CountryRepository(_context);
             City = new CityRepository(_context);
             Place = new PlaceRepository(_context);
             Hotel= new HotelRepository(_context);
             Payment = new PaymentRepository(_context);
             Trip =new TripRepository(_context);
-            _context = context;
         }
 
         public IAuth Auth { get; private set; }
+        public IUser User { get; private set; }
 
        
 

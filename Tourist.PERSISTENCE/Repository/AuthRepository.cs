@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Google.Apis.Auth;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using NETCore.MailKit.Core;
@@ -26,15 +28,18 @@ namespace Tourist.PERSISTENCE.Repository
         private readonly JWTDTOs _jwt;
         private readonly IEmailSender _emailSender;
         private readonly ILogger<AuthRepository> _logger;
+        private readonly IConfiguration _configuration;
 
         public AuthRepository(
             UserManager<ApplicationUser> userManager,
             IEmailSender emailSender,
-            IOptions<JWTDTOs> jwt,
-            ILogger<AuthRepository>logger)
+            ILogger<AuthRepository>logger,
+            IConfiguration configuration,
+            IOptions<JWTDTOs> jwt)
         {
             _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
             _emailSender = emailSender ?? throw new ArgumentNullException(nameof(emailSender));
+            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             _jwt = jwt?.Value ?? throw new ArgumentNullException(nameof(jwt));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
@@ -145,6 +150,89 @@ namespace Tourist.PERSISTENCE.Repository
                 return "Email was confirmed successfully";        
             else
                 throw new Exception("Email or token sent is incorrect");
+        }
+
+        /// <summary>
+        /// Handles Google One Tap login using an ID Token received from the frontend.
+        /// Validates the token, finds or creates the corresponding ApplicationUser,
+        /// and returns the authentication DTO with JWT tokens.
+        /// </summary>
+        /// <param name="googleLoginDTO">
+        /// DTO containing the ID Token from the frontend.
+        /// Expected format: JWT (string starting with "eyJ...").
+        /// Do NOT send access tokens or authorization codes.
+        /// </param>
+        /// <returns>
+        /// Returns an <see cref="AuthDTOs"/> object containing user tokens and info.
+        /// </returns>
+        /// <remarks>
+        /// Steps performed:
+        /// 1. Validate the ID Token using GoogleJsonWebSignature.ValidateAsync.
+        /// 2. Check if a user with the token's email exists:
+        ///    - If not, create a new ApplicationUser and add Google login info.
+        ///    - If yes, update GoogleId if missing and ensure login info exists.
+        /// 3. Generate JWT tokens for the user.
+        /// 
+        /// Important notes for maintenance:
+        /// - The frontend must send a valid ID Token from Google One Tap (JWT).
+        /// - The Web Client ID used in GoogleJsonWebSignature.ValidationSettings must match the client ID
+        ///   used in the frontend for One Tap.
+        /// - Access tokens or authorization codes are NOT accepted here.
+        /// - Any changes in Google Identity Services (One Tap) might require updating this flow.
+        /// </remarks>
+        public async Task<AuthDTOs> GoogleAuth(GoogleLoginDTO googleLoginDTO)
+        {
+
+            var payload = await GoogleJsonWebSignature.ValidateAsync(googleLoginDTO.IdToken,
+                new GoogleJsonWebSignature.ValidationSettings
+                {
+                    Audience = new[] { _configuration["Authentication:Google:ClientId"] }
+                });
+
+            var user = await _userManager.FindByEmailAsync(payload.Email);
+
+            if (user == null)
+            {
+                user = new ApplicationUser
+                {
+                    UserName = payload.Email,
+                    Email = payload.Email,
+                    EmailConfirmed = true,
+                    GoogleId = payload.Subject,
+                    ProfilePicture = payload.Picture,
+                    CreatedAt = DateTime.Now
+                };
+
+                var result = await _userManager.CreateAsync(user);
+
+                if (!result.Succeeded) return new AuthDTOs { Message = "Error with creating account with google" };
+
+                await _userManager.AddLoginAsync(user,new UserLoginInfo(
+                    "Google",
+                    payload.Subject,
+                    "Google"
+                ));
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(user.GoogleId))
+                {
+                    user.GoogleId = payload.Subject;
+                    await _userManager.UpdateAsync(user);
+
+                    var logins = await _userManager.GetLoginsAsync(user);
+                    if (!logins.Any(l => l.LoginProvider == "Google"))
+                    {
+                        await _userManager.AddLoginAsync(user, new UserLoginInfo(
+                            "Google",
+                            payload.Subject,
+                            "Google"
+                        ));
+                    }
+                }
+            }
+            return await GenerateTokenAsync(user);
+                
         }
         // ---------------- Change Password ----------------
         public async Task<(HttpStatusCode, string)> ChangePasswordAsync(ClaimsPrincipal claims, ChangePasswordRequestDTO request)
