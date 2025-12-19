@@ -11,6 +11,6 @@ namespace Tourist.APPLICATION.Interface
 {
     public interface IHotelRepository:IRepository<Hotel>
     {
-        public Task UpdateAsync(Hotel hotel);
+        public void UpdateAsync(Hotel hotel);
     }
 }

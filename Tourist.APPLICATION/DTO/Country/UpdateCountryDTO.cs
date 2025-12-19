@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace Tourist.APPLICATION.DTO.Country
 {
-    public class CountryDTO
+    public class UpdateCountryDTO
     {
+        public int Id { get; set; }
+        public string Name { get; set; }
+
     }
 }

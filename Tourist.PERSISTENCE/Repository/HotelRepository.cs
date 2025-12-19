@@ -17,9 +17,9 @@ namespace Tourist.PERSISTENCE.Repository
             _context = context;
         }
 
-        public async Task UpdateAsync(Hotel hotel)
+        public void UpdateAsync(Hotel hotel)
         {
-             await _context.SaveChangesAsync();
+              _context.Update(hotel);
         }
     }
 }

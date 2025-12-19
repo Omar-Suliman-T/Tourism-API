@@ -101,7 +101,7 @@ namespace Tourist.APPLICATION.UseCase.Hotel
         public async Task<(HttpStatusCode, List<DOMAIN.model.Hotel>)> GetAllHoteIdAsync()
         {
             
-                var hotels = await _unitOfWork.Hotel.GetAllAsync();
+                var hotels = await _unitOfWork.Hotel.GetAllAsync(h=>h.IsDeleted==false);
 
                 return (HttpStatusCode.OK, hotels.ToList());
         }

@@ -13,6 +13,7 @@ using Tourist.APPLICATION.Mapping.Auth;
 using Tourist.APPLICATION.Service.EmailService;
 using Tourist.APPLICATION.UseCase.Auth;
 using Tourist.APPLICATION.UseCase.Hotel;
+using Tourist.APPLICATION.UseCase.Country;
 using Tourist.DOMAIN.model;
 using Tourist.PERSISTENCE;
 using Tourist.PERSISTENCE.Repository;
@@ -38,6 +39,7 @@ namespace Tourist.API
             builder.Services.AddScoped<GoogleAuthUseCase>();
             builder.Services.AddScoped<RegisterMap>();
             builder.Services.AddScoped<HotelUseCase>();
+            builder.Services.AddScoped<CountryUseCase>();
 
             builder.Services.AddScoped<ChangePasswordUseCase>();
 
@@ -87,12 +89,11 @@ namespace Tourist.API
                             Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]))
 
                 };
+            }).AddGoogle(options =>
+            {
+                options.ClientId = builder.Configuration["Authentication:Google:ClientId"]!;
+                options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"]!;
             });
-            //.AddGoogle(options =>
-            //{
-            //    options.ClientId = builder.Configuration["Authentication:Google:ClientId"]!;
-            //    options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"]!;
-            //});
 
 
             builder.Services.AddControllers();
