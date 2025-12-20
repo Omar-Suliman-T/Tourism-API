@@ -20,19 +20,24 @@ namespace Tourist.PERSISTENCE.Repository
         private readonly IConfiguration _configuration;
         private readonly JWTDTOs _jwt;
         private readonly ApplicationDbContext _context;
+
         public ICountryRepository Country { get; private set; }
         public ICityRepository City { get; private set; }
         public IPlaceRepository Place { get; private set; }
         public IHotelRepository Hotel { get; private set; }
         public ITripRepository Trip { get; private set; }
         public IPaymentRepository Payment { get; private set; }
+        public IReviewRepository Review { get; private set; }
+
 
         public UnitOfWork(
-            UserManager<ApplicationUser> userManager, 
+            UserManager<ApplicationUser> userManager,
             IEmailSender emailSender,
             IOptions<JWTDTOs> jwt,
             IConfiguration configuration,
-            ApplicationDbContext context)
+            ApplicationDbContext context,
+            ITripRepository trip,
+            IReviewRepository review)
         {
             _userManager = userManager;
             _emailSender = emailSender;
@@ -45,10 +50,13 @@ namespace Tourist.PERSISTENCE.Repository
             Country = new CountryRepository(_context);
             City = new CityRepository(_context);
             Place = new PlaceRepository(_context);
-            Hotel= new HotelRepository(_context);
+            Hotel = new HotelRepository(_context);
             Payment = new PaymentRepository(_context);
-            Trip =new TripRepository(_context);
+
+
             _context = context;
+            Trip = trip;
+            Review = review;
         }
 
         public IAuth Auth { get; private set; }
