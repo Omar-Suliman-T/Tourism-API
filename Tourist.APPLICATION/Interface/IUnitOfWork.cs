@@ -14,9 +14,9 @@ namespace Tourist.APPLICATION.Interface
         ICityRepository City{get;} 
         IPlaceRepository Place{get;}    
         IHotelRepository Hotel{get;}      
-        ITripRepository Trip{get;}      
-        IPaymentRepository Payment{get;}    
-        IUser User { get; }
+        ITripRepository Trip {get;}
+        IReviewRepository Review { get; }
+        IPaymentRepository Payment {get;}    
         Task<int> CompleteAsync();
         public Task SaveChangesAsync();
     }

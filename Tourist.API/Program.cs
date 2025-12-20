@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 using System.Reflection;
@@ -9,9 +10,12 @@ using System.Text;
 using Tourist.API.Middleware;
 using Tourist.APPLICATION.DTO.Auth;
 using Tourist.APPLICATION.Interface;
+using Tourist.APPLICATION.Mapping;
 using Tourist.APPLICATION.Mapping.Auth;
 using Tourist.APPLICATION.Service.EmailService;
 using Tourist.APPLICATION.UseCase.Auth;
+using Tourist.APPLICATION.UseCase.Review;
+using Tourist.APPLICATION.UseCase.Trip;
 using Tourist.DOMAIN.model;
 using Tourist.PERSISTENCE;
 using Tourist.PERSISTENCE.Repository;
@@ -36,8 +40,21 @@ namespace Tourist.API
             builder.Services.AddScoped <ConfirmEmailUseCase>();
             builder.Services.AddScoped<GoogleAuthUseCase>();
             builder.Services.AddScoped<RegisterMap>();
+            builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+
+            builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+
 
             builder.Services.AddScoped<ChangePasswordUseCase>();
+            builder.Services.AddScoped<AddReviewUseCase>();
+            builder.Services.AddScoped<GetAllReviewsUseCase>();
+            builder.Services.AddScoped<RemoveReviewUseCase>();
+            builder.Services.AddScoped<GetTripsByIdUseCase>();
+            builder.Services.AddScoped<AddTripUseCase>();
+            builder.Services.AddScoped<GetActiveTripUseCase>();
+            builder.Services.AddScoped<RemoveTripUseCase>();
+
+
 
             builder.Services.AddScoped<LoginUseCase>();
             builder.Services.AddScoped<LoginMap>();
@@ -59,7 +76,8 @@ namespace Tourist.API
             builder.Services.Configure<DataProtectionTokenProviderOptions>(opt =>
                 opt.TokenLifespan = TimeSpan.FromHours(2));
 
-            
+            builder.Services.AddAutoMapper(cfg => { }, typeof(ApplicationAssemblyMarker).Assembly);
+
             builder.Services.Configure<JWTDTOs>(builder.Configuration.GetSection("JWT"));
 
             builder.Services.AddAuthentication(options => {
