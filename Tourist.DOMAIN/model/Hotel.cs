@@ -4,10 +4,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Tourist.DOMAIN.model.Shared;
 
 namespace Tourist.DOMAIN.model
 {
-    public class Hotel
+    public class Hotel: BaseEntity
     {
         public int HotelId { get; set; }
         public string? Name { get; set; }

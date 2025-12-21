@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Tourist.DOMAIN.model.Shared;
 
 namespace Tourist.DOMAIN.model
 {
@@ -15,7 +16,7 @@ namespace Tourist.DOMAIN.model
         Good = 4,
         Excellent = 5
     }
-    public class Review
+    public class Review: BaseEntity
     {
         public int ReviewId { get; set; }
         public Rating Rating { get; set; }

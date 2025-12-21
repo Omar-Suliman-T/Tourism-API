@@ -5,10 +5,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Tourist.DOMAIN.model.Shared;
 
 namespace Tourist.DOMAIN.model
 {
-    public class TripActivity
+    public class TripActivity: BaseEntity
     {
         [Key]
         public int ActivityId { get; set; }

@@ -47,6 +47,22 @@ namespace Tourist.PERSISTENCE.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "11111111-1111-1111-1111-111111111111",
+                            ConcurrencyStamp = "aaaaaaa1-aaaa-aaaa-aaaa-aaaaaaaaaaa1",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = "22222222-2222-2222-2222-222222222222",
+                            ConcurrencyStamp = "bbbbbbb2-bbbb-bbbb-bbbb-bbbbbbbbbbb2",
+                            Name = "Customer",
+                            NormalizedName = "CUSTOMER"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -72,6 +88,22 @@ namespace Tourist.PERSISTENCE.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetRoleClaims", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ClaimType = "Permission",
+                            ClaimValue = "CanManageUsers",
+                            RoleId = "11111111-1111-1111-1111-111111111111"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ClaimType = "Permission",
+                            ClaimValue = "CanBookTrips",
+                            RoleId = "22222222-2222-2222-2222-222222222222"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -97,6 +129,22 @@ namespace Tourist.PERSISTENCE.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("AspNetUserClaims", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ClaimType = "FullName",
+                            ClaimValue = "Saif Komi",
+                            UserId = "aaaaaaaa-1111-1111-1111-aaaaaaaaaaaa"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ClaimType = "FullName",
+                            ClaimValue = "Omar Suliman",
+                            UserId = "bbbbbbbb-2222-2222-2222-bbbbbbbbbbbb"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
@@ -134,6 +182,18 @@ namespace Tourist.PERSISTENCE.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "aaaaaaaa-1111-1111-1111-aaaaaaaaaaaa",
+                            RoleId = "11111111-1111-1111-1111-111111111111"
+                        },
+                        new
+                        {
+                            UserId = "bbbbbbbb-2222-2222-2222-bbbbbbbbbbbb",
+                            RoleId = "22222222-2222-2222-2222-222222222222"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -167,12 +227,18 @@ namespace Tourist.PERSISTENCE.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("GoogleId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -197,6 +263,9 @@ namespace Tourist.PERSISTENCE.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<string>("ProfilePicture")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -218,6 +287,42 @@ namespace Tourist.PERSISTENCE.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "aaaaaaaa-1111-1111-1111-aaaaaaaaaaaa",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "dddddddd-1111-1111-1111-dddddddddddd",
+                            Email = "saifalkomi@gmail.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "SAIFALKOMI@GMAIL.COM",
+                            NormalizedUserName = "SAIF KOMI",
+                            PasswordHash = "AQAAAAIAAYagAAAAEDHhLq+Xep0cKJz7xXoA+yVJpVn+7L+5pXZ3RYw0nQ6fS4M4G6tGZ7kE8fVwV3Wp0w==",
+                            PhoneNumber = "+972592131946",
+                            PhoneNumberConfirmed = true,
+                            SecurityStamp = "cccccccc-1111-1111-1111-cccccccccccc",
+                            TwoFactorEnabled = false,
+                            UserName = "Saif Komi"
+                        },
+                        new
+                        {
+                            Id = "bbbbbbbb-2222-2222-2222-bbbbbbbbbbbb",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "ffffffff-2222-2222-2222-ffffffffffff",
+                            Email = "omarsit20004031@gmail.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "OMARSIT20004031@GMAIL.COM",
+                            NormalizedUserName = "OMAR SULIMAN",
+                            PasswordHash = "AQAAAAIAAYagAAAAEG5ccOAsgYYXQ9ndQ8YN6Ckv3GCdkkcDlMdDO4k47hcYfU/QZjnzXxZMqRdQ7Gz6Jw==",
+                            PhoneNumber = "+962798461282",
+                            PhoneNumberConfirmed = true,
+                            SecurityStamp = "eeeeeeee-2222-2222-2222-eeeeeeeeeeee",
+                            TwoFactorEnabled = false,
+                            UserName = "Omar Suliman"
+                        });
                 });
 
             modelBuilder.Entity("Tourist.DOMAIN.model.Category", b =>
@@ -349,7 +454,7 @@ namespace Tourist.PERSISTENCE.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Norifications");
+                    b.ToTable("Notifications");
                 });
 
             modelBuilder.Entity("Tourist.DOMAIN.model.Payment", b =>

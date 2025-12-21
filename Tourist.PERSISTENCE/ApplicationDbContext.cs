@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using System;
@@ -23,7 +24,7 @@ namespace Tourist.PERSISTENCE
         public DbSet<City> Cities { get; set; }
         public DbSet<Country> Countries { get; set; }
         public DbSet<Hotel> Hotels { get; set; }
-        public DbSet<Notification> Norifications { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
         public DbSet<Payment> Payments { get; set; }
         public DbSet<Place> Places { get; set; }
         public DbSet<Review> Reviews { get; set; }
@@ -34,17 +35,136 @@ namespace Tourist.PERSISTENCE
         {
             base.OnModelCreating(builder);
 
-            builder.Entity<Review>()
-            .Property(t => t.CreatedAt)
-            .HasDefaultValueSql("GETDATE()");
 
-            builder.Entity<Notification>()
-            .Property(t => t.CreatedAt)
-            .HasDefaultValueSql("GETDATE()");
+            var adminRoleId = "11111111-1111-1111-1111-111111111111";
+            var customerRoleId = "22222222-2222-2222-2222-222222222222";
+
+            builder.Entity<IdentityRole>().HasData(
+                new IdentityRole
+                {
+                    Id = adminRoleId,
+                    Name = "Admin",
+                    NormalizedName = "ADMIN",
+                    ConcurrencyStamp = "aaaaaaa1-aaaa-aaaa-aaaa-aaaaaaaaaaa1"
+                },
+                new IdentityRole
+                {
+                    Id = customerRoleId,
+                    Name = "Customer",
+                    NormalizedName = "CUSTOMER",
+                    ConcurrencyStamp = "bbbbbbb2-bbbb-bbbb-bbbb-bbbbbbbbbbb2"
+                }
+            );
+
+            var adminUserId = "aaaaaaaa-1111-1111-1111-aaaaaaaaaaaa";
+            var customerUserId = "bbbbbbbb-2222-2222-2222-bbbbbbbbbbbb";
+
+            var admin = new ApplicationUser
+            {
+                Id = adminUserId,
+                UserName = "Saif Komi",
+                NormalizedUserName = "SAIF KOMI",
+                Email = "saifalkomi@gmail.com",
+                NormalizedEmail = "SAIFALKOMI@GMAIL.COM",
+                EmailConfirmed = true,
+                SecurityStamp = "cccccccc-1111-1111-1111-cccccccccccc",
+                ConcurrencyStamp = "dddddddd-1111-1111-1111-dddddddddddd",
+                PhoneNumber = "+972592131946",
+                PhoneNumberConfirmed = true,
+                TwoFactorEnabled = false,
+                LockoutEnd = null,
+                LockoutEnabled = false,
+                AccessFailedCount = 0,
+                PasswordHash = "AQAAAAIAAYagAAAAEDHhLq+Xep0cKJz7xXoA+yVJpVn+7L+5pXZ3RYw0nQ6fS4M4G6tGZ7kE8fVwV3Wp0w=="
+            };
+
+            var customer = new ApplicationUser
+            {
+                Id = customerUserId,
+                UserName = "Omar Suliman",
+                NormalizedUserName = "OMAR SULIMAN",
+                Email = "omarsit20004031@gmail.com",
+                NormalizedEmail = "OMARSIT20004031@GMAIL.COM",
+                EmailConfirmed = true,
+                SecurityStamp = "eeeeeeee-2222-2222-2222-eeeeeeeeeeee",
+                ConcurrencyStamp = "ffffffff-2222-2222-2222-ffffffffffff",
+                PhoneNumber = "+962798461282",
+                PhoneNumberConfirmed = true,
+                TwoFactorEnabled = false,
+                LockoutEnd = null,
+                LockoutEnabled = false,
+                AccessFailedCount = 0,
+                PasswordHash = "AQAAAAIAAYagAAAAEG5ccOAsgYYXQ9ndQ8YN6Ckv3GCdkkcDlMdDO4k47hcYfU/QZjnzXxZMqRdQ7Gz6Jw=="
+            };
+
+            builder.Entity<ApplicationUser>().HasData(admin, customer);
+
+           
+            builder.Entity<IdentityUserRole<string>>().HasData(
+                new IdentityUserRole<string>
+                {
+                    UserId = adminUserId,
+                    RoleId = adminRoleId
+                },
+                new IdentityUserRole<string>
+                {
+                    UserId = customerUserId,
+                    RoleId = customerRoleId
+                }
+            );
+
+           
+            builder.Entity<IdentityRoleClaim<string>>().HasData(
+                new IdentityRoleClaim<string>
+                {
+                    Id = 1,
+                    RoleId = adminRoleId,
+                    ClaimType = "Permission",
+                    ClaimValue = "CanManageUsers"
+                },
+                new IdentityRoleClaim<string>
+                {
+                    Id = 2,
+                    RoleId = customerRoleId,
+                    ClaimType = "Permission",
+                    ClaimValue = "CanBookTrips"
+                }
+            );
+
+           
+            builder.Entity<IdentityUserClaim<string>>().HasData(
+                new IdentityUserClaim<string>
+                {
+                    Id = 1,
+                    UserId = adminUserId,
+                    ClaimType = "FullName",
+                    ClaimValue = "Saif Komi"
+                },
+                new IdentityUserClaim<string>
+                {
+                    Id = 2,
+                    UserId = customerUserId,
+                    ClaimType = "FullName",
+                    ClaimValue = "Omar Suliman"
+                }
+            );
+
+       
+            builder.Entity<Review>()
+                .Property(t => t.CreatedAt)
+                .HasDefaultValueSql("GETDATE()");
+
+            builder.Entity<Notification>(entity =>
+            {
+                entity.HasKey(n => n.NotificationId);
+                entity.Property(n => n.NotificationId)
+                      .ValueGeneratedOnAdd();
+            });
+
 
             builder.Entity<Payment>()
-            .Property(t => t.Date)
-            .HasDefaultValueSql("GETDATE()");
+                .Property(t => t.Date)
+                .HasDefaultValueSql("GETDATE()");
 
             builder.Entity<City>(c =>
             {
@@ -122,6 +242,10 @@ namespace Tourist.PERSISTENCE
                 .WithOne(r => r.User)
                 .HasForeignKey(e => e.UserId)
                 .OnDelete(DeleteBehavior.NoAction);
+                
+
+                
+
             });
 
             builder.Entity<Country>(c =>
