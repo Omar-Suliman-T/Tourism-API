@@ -39,7 +39,16 @@ namespace Tourist.API
             builder.Services.AddScoped<GoogleAuthUseCase>();
             builder.Services.AddScoped<RegisterMap>();
             builder.Services.AddScoped<HotelUseCase>();
-            builder.Services.AddScoped<CountryUseCase>();
+            builder.Services.AddScoped<AddCountryUseCase>();
+            builder.Services.AddScoped<UpdateCountryUseCase>();
+            builder.Services.AddScoped<DeleteCountryUseCase>();
+            builder.Services.AddScoped<GetCountryUseCase>();
+            builder.Services.AddScoped<GetAllCountryUseCase>();
+            builder.Services.AddScoped<AddHotelUseCase>();
+            builder.Services.AddScoped<UpdateHotelUseCase>();
+            builder.Services.AddScoped<DeleteHotelUseCase>();
+            builder.Services.AddScoped<GetHotelUseCase>();
+            builder.Services.AddScoped<GetAllHotelUseCase>();
 
             builder.Services.AddScoped<ChangePasswordUseCase>();
 

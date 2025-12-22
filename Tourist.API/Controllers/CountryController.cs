@@ -9,53 +9,48 @@ namespace Tourist.API.Controllers
     [ApiController]
     public class CountryController : ControllerBase
     {
-        private readonly CountryUseCase _CountryUseCase;
-        public CountryController(CountryUseCase CountryUseCase)
-        {
-            _CountryUseCase = CountryUseCase;
-        }
 
         [HttpGet("get/{Id:int}")]
-        public async Task<ActionResult> GetByIdAsync(int Id)
+        public async Task<ActionResult> GetByIdAsync([FromServices]GetCountryUseCase getCountryUseCase,int Id)
         {
-            var Country = await _CountryUseCase.GetCountryByIdAsync(Id);
+            var Country = await getCountryUseCase.ExecuteAsync(Id);
             return StatusCode((int)Country.Item1, Country.Item2);
         }
 
         [HttpGet("getAll")]
-        public async Task<ActionResult> GetAllAsync()
+        public async Task<ActionResult> GetAllAsync([FromServices] GetAllCountryUseCase getAllCountryUseCase)
         {
-            var Country = await _CountryUseCase.GetAllCountryAsync();
+            var Country = await getAllCountryUseCase.ExecuteAsync();
             return StatusCode((int)Country.Item1, Country.Item2);
         }
         [HttpPost("add")]
-        public async Task<ActionResult<string>> AddCountryAsync([FromBody] AddCountryDTO CountryDTO)
+        public async Task<ActionResult<string>> AddCountryAsync([FromServices]AddCountryUseCase addCountryUseCase,[FromBody] AddCountryDTO CountryDTO)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var Country = await _CountryUseCase.AddCountryAsync(CountryDTO);
+            var Country = await addCountryUseCase.ExecuteAsync(CountryDTO);
             return StatusCode((int)Country.Item1, Country.Item2);
         }
         [HttpPut("update")]
-        public async Task<ActionResult<string>> AddCountryAsync([FromBody] UpdateCountryDTO CountryDTO)
+        public async Task<ActionResult<string>> UpdateCountryAsync([FromServices]UpdateCountryUseCase updateCountryUseCase,[FromBody] UpdateCountryDTO CountryDTO)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var Country = await _CountryUseCase.UpateCountryAsync(CountryDTO);
+            var Country = await updateCountryUseCase.ExecuteAsync(CountryDTO);
             return StatusCode((int)Country.Item1, Country.Item2);
         }
         [HttpDelete("delete/{Id:int}")]
-        public async Task<ActionResult<string>> DeleteCountryAsync([FromRoute] int Id)
+        public async Task<ActionResult<string>> DeleteCountryAsync([FromServices]DeleteCountryUseCase deleteCountryUseCase,[FromRoute] int Id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var Country = await _CountryUseCase.DeleteCountryAsync(Id);
+            var Country = await deleteCountryUseCase.ExecuteAsync(Id);
             return StatusCode((int)Country.Item1, Country.Item2);
         }
     }

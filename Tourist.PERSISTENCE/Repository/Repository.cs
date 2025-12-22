@@ -58,7 +58,7 @@ namespace Tourist.APPLICATION.Interface
             {
                 result = _db;
             }
-            if(string.IsNullOrEmpty(includeProperities))
+            if(!string.IsNullOrEmpty(includeProperities))
             {
                 foreach(var include in includeProperities.Split( ',' ,StringSplitOptions.RemoveEmptyEntries))
                 {
