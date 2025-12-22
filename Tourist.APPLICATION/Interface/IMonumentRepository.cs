@@ -7,8 +7,8 @@ using Tourist.DOMAIN.model;
 
 namespace Tourist.APPLICATION.Interface
 {
-    public interface ITourRepository:IRepository<Tour>
+    public interface IMonumentRepository:IRepository<Monument>
     {
-        public void Update(Tour tour);
+        public void Update(Monument monument);
     }
 }

@@ -19,6 +19,7 @@ namespace Tourist.APPLICATION.Interface
         IReviewRepository Review { get; }
         IPaymentRepository Payment {get;}    
         ITourRepository Tour {get;}    
+        IMonumentRepository Monument {get;}    
         Task<int> CompleteAsync();
         public Task SaveChangesAsync();
     }

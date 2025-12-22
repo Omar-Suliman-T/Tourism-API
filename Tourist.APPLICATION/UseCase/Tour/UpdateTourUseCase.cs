@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Tourist.APPLICATION.DTO.TourDto;
@@ -17,11 +18,11 @@ namespace Tourist.APPLICATION.UseCase.Tour
         {
             _unitOfWork = unitOfWork;
         }
-        public async Task<DOMAIN.model.Tour> ExeucuteAsync(int id, TourDto dto)
+        public async Task<(HttpStatusCode,DOMAIN.model.Tour)> ExeucuteAsync(int id, TourDto dto)
         {
             var tour = await _unitOfWork.Tour.GetAsync(t => t.Id == id, includeProperities: "TourMonuments");
 
-            if (tour == null) return null;
+            if (tour == null) return (HttpStatusCode.NotFound,null!);
 
             tour.Title = dto.Title;
             tour.Description = dto.Description;
@@ -36,7 +37,7 @@ namespace Tourist.APPLICATION.UseCase.Tour
             }
 
             await _unitOfWork.SaveChangesAsync();
-            return tour;
+            return(HttpStatusCode.OK, tour);
         }
     }
 }

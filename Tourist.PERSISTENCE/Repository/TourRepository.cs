@@ -16,9 +16,9 @@ namespace Tourist.PERSISTENCE.Repository
             _context = context;
         }
 
-        public void Update()
+        public void Update(Tour tour)
         {
-            //_context.Update();
+            _context.Update(tour);
         }
     }
 }
