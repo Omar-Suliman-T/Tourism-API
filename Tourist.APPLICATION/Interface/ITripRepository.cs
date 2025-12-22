@@ -9,9 +9,7 @@ namespace Tourist.APPLICATION.Interface
 {
     public interface ITripRepository
     {
-        Task AddAsync(Trip trip);
         Task<Trip?> GetActiveTripByIdAsync(string userId);
-        Task<IEnumerable<Trip>> GetAllByIdAsync(string userId);
-        void SoftRmoveAsync(int tripId);
+        Task SoftRmoveAsync(int tripId);
     }
 }

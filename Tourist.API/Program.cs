@@ -22,6 +22,7 @@ using Tourist.DOMAIN.model;
 using Tourist.PERSISTENCE;
 using Tourist.PERSISTENCE.Repository;
 using Tourist.APPLICATION.UseCase.Tour;
+using Tourist.APPLICATION.UseCase.Monument;
 
 namespace Tourist.API
 {
@@ -64,6 +65,12 @@ namespace Tourist.API
             builder.Services.AddScoped<DeleteTourUseCase>();
             builder.Services.AddScoped<GetTourUseCase>();
             builder.Services.AddScoped<GetAllToursUseCase>();
+
+            builder.Services.AddScoped<AddMonumentUseCase>();
+            builder.Services.AddScoped<UpdateMonumentUseCase>();
+            builder.Services.AddScoped<DeleteMonumentUseCase>();
+            builder.Services.AddScoped<GetMonumentUseCase>();
+            builder.Services.AddScoped<GetAllMonumentsUseCase>();
 
             builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 

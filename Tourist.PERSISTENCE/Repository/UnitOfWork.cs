@@ -32,6 +32,7 @@ namespace Tourist.PERSISTENCE.Repository
         public IPaymentRepository Payment { get; private set; }
         public IReviewRepository Review { get; private set; }
         public ITourRepository Tour { get; private set; }
+        public IMonumentRepository Monument { get; private set; }
 
 
         public UnitOfWork(
@@ -66,7 +67,7 @@ namespace Tourist.PERSISTENCE.Repository
             Payment = new PaymentRepository(_context);
             Trip =new TripRepository(_context,_repository);
             Tour = new TourRepository(_context);
-
+            Monument = new MonumentRepository(_context);
 
         }
 
