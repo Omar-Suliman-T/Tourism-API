@@ -21,6 +21,7 @@ using Tourist.APPLICATION.UseCase.Trip;
 using Tourist.DOMAIN.model;
 using Tourist.PERSISTENCE;
 using Tourist.PERSISTENCE.Repository;
+using Tourist.APPLICATION.UseCase.Tour;
 
 namespace Tourist.API
 {
@@ -43,16 +44,27 @@ namespace Tourist.API
             builder.Services.AddScoped<GoogleAuthUseCase>();
             builder.Services.AddScoped<RegisterMap>();
             builder.Services.AddScoped<HotelUseCase>();
+
+
             builder.Services.AddScoped<AddCountryUseCase>();
             builder.Services.AddScoped<UpdateCountryUseCase>();
             builder.Services.AddScoped<DeleteCountryUseCase>();
             builder.Services.AddScoped<GetCountryUseCase>();
             builder.Services.AddScoped<GetAllCountryUseCase>();
+
+
             builder.Services.AddScoped<AddHotelUseCase>();
             builder.Services.AddScoped<UpdateHotelUseCase>();
             builder.Services.AddScoped<DeleteHotelUseCase>();
             builder.Services.AddScoped<GetHotelUseCase>();
             builder.Services.AddScoped<GetAllHotelUseCase>();
+
+            builder.Services.AddScoped<AddTourUseCase>();
+            builder.Services.AddScoped<UpdateTourUseCase>();
+            builder.Services.AddScoped<DeleteTourUseCase>();
+            builder.Services.AddScoped<GetTourUseCase>();
+            builder.Services.AddScoped<GetAllToursUseCase>();
+
             builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
             builder.Services.AddScoped<IReviewRepository, ReviewRepository>();

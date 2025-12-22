@@ -31,6 +31,7 @@ namespace Tourist.PERSISTENCE.Repository
         public ITripRepository Trip { get; private set; }
         public IPaymentRepository Payment { get; private set; }
         public IReviewRepository Review { get; private set; }
+        public ITourRepository Tour { get; private set; }
 
 
         public UnitOfWork(
@@ -54,6 +55,8 @@ namespace Tourist.PERSISTENCE.Repository
             _loggerFactory = loggerFactory;
             _context = context;
             _repository = repository;
+            _context = context;
+            Review = review;
 
             // إنشاء AuthRepository بشكل صحيح
             Country = new CountryRepository(_context);
@@ -62,9 +65,8 @@ namespace Tourist.PERSISTENCE.Repository
             Hotel = new HotelRepository(_context);
             Payment = new PaymentRepository(_context);
             Trip =new TripRepository(_context,_repository);
+            Tour = new TourRepository(_context);
 
-            _context = context;
-            Review = review;
 
         }
 
