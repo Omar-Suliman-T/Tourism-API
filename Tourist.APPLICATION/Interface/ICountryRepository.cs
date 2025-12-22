@@ -9,5 +9,6 @@ namespace Tourist.APPLICATION.Interface
 {
     public interface ICountryRepository : IRepository<Country>
     {
+
     }
 }
