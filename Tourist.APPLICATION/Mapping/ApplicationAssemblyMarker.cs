@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Tourist.APPLICATION.DTO.Review
+namespace Tourist.APPLICATION.Mapping
 {
-    public class ReviewDTO
+    public class ApplicationAssemblyMarker
     {
     }
 }

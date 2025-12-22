@@ -10,13 +10,14 @@ namespace Tourist.APPLICATION.Interface
     public interface IUnitOfWork:IDisposable
     {
         IAuth Auth { get; }
+        IUser User { get; }
         ICountryRepository Country{get;} 
         ICityRepository City{get;} 
         IPlaceRepository Place{get;}    
         IHotelRepository Hotel{get;}      
-        ITripRepository Trip{get;}      
-        IPaymentRepository Payment{get;}    
-        IUser User { get; }
+        ITripRepository Trip {get;}
+        IReviewRepository Review { get; }
+        IPaymentRepository Payment {get;}    
         Task<int> CompleteAsync();
         public Task SaveChangesAsync();
     }
