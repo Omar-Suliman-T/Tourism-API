@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,30 +9,18 @@ using Tourist.DOMAIN.model;
 
 namespace Tourist.PERSISTENCE.Repository
 {
-    public class ReviewRepository : IReviewRepository
+    public class ReviewRepository : Repository<Review>, IReviewRepository
     {
         private readonly ApplicationDbContext _context;
-        private readonly IRepository<Review> _repository;
-        public ReviewRepository(ApplicationDbContext context, IRepository<Review> repository)
+        public ReviewRepository(ApplicationDbContext context): base(context) 
         {
             _context = context;
-            _repository = repository;
-        }
-
-        public async Task AddAsync(Review review)
-        {
-            await _repository.AddAsync(review);
-        }
-
-        public async Task<IEnumerable<Review>> GetAllReviewsAsync(string userId)
-        {
-            return await _repository.GetAllAsync(x => x.UserId == userId);
         }
 
 
-        public void SoftRmoveAsync(int reviewId)
+        public async Task SoftRmoveAsync(int reviewId)
         {
-            var review = _context.Reviews.FirstOrDefault(t => t.ReviewId == reviewId);
+            var review = await _context.Reviews.FirstOrDefaultAsync(t => t.ReviewId == reviewId);
 
             if (review == null) throw new ArgumentNullException(nameof(review));
 

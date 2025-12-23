@@ -21,7 +21,7 @@ namespace Tourist.APPLICATION.UseCase.Trip
 
         public async Task<IEnumerable<GetTripsByIdDTO>> ExecuteAsunc(string userId)
         {
-            var trips = await _unitOfWork.Trip.GetAllByIdAsync(userId);
+            var trips = await _unitOfWork.Trip.GetAllAsync(x => x.UserId == userId);
             var tripDTO = _mapper.Map<IEnumerable<GetTripsByIdDTO>>(trips);
             return tripDTO;
         }

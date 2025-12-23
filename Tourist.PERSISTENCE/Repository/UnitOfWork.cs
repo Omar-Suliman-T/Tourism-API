@@ -28,7 +28,8 @@ namespace Tourist.PERSISTENCE.Repository
         public ITripRepository Trip { get; private set; }
         public IPaymentRepository Payment { get; private set; }
         public IReviewRepository Review { get; private set; }
-
+        public IAuth Auth { get; private set; }
+        public IUser User { get; private set; }
 
         public UnitOfWork(
             UserManager<ApplicationUser> userManager,
@@ -52,31 +53,25 @@ namespace Tourist.PERSISTENCE.Repository
             Place = new PlaceRepository(_context);
             Hotel = new HotelRepository(_context);
             Payment = new PaymentRepository(_context);
-
-
-            _context = context;
-            Trip = trip;
-            Review = review;
+            User = new UserRepository(_context);
+            Trip = new TripRepository(_context);
+            Review = new ReviewRepository(_context);
         }
 
-        public IAuth Auth { get; private set; }
-        public IUser User { get; private set; }
 
-       
-
-        public Task<int> CompleteAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Dispose()
-        {
-            throw new NotImplementedException();
-        }
 
         public async Task SaveChangesAsync()
         {
           await _context.SaveChangesAsync();  
+        }
+        public async Task<int> CompleteAsync()
+        {
+            return await _context.SaveChangesAsync();
+        }
+
+        public void Dispose()
+        {
+            _context.Dispose();
         }
     }
 }

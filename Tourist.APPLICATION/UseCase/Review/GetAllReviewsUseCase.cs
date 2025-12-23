@@ -21,7 +21,7 @@ namespace Tourist.APPLICATION.UseCase.Trip
 
         public async Task<IEnumerable<GetReviewByIdDTO>> ExecuteAsync(string userId)
         {
-            var review = await _unitOfWork.Review.GetAllReviewsAsync(userId);
+            var review = await _unitOfWork.Review.GetAllAsync(x => x.UserId == userId);
             if (review == null) throw new ArgumentNullException(nameof(review));
 
             return _mapper.Map<IEnumerable<GetReviewByIdDTO>>(review);            
