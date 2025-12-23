@@ -44,7 +44,6 @@ namespace Tourist.API
             builder.Services.AddScoped<ConfirmEmailUseCase>();
             builder.Services.AddScoped<GoogleAuthUseCase>();
             builder.Services.AddScoped<RegisterMap>();
-            builder.Services.AddScoped<HotelUseCase>();
 
 
             builder.Services.AddScoped<AddCountryUseCase>();
@@ -75,6 +74,7 @@ namespace Tourist.API
             builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
             builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+
 
 
             builder.Services.AddScoped<ChangePasswordUseCase>();

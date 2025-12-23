@@ -7,10 +7,8 @@ using Tourist.DOMAIN.model;
 
 namespace Tourist.APPLICATION.Interface
 {
-    public interface IReviewRepository    
+    public interface IReviewRepository: IRepository<Review>    
     {
-        Task AddAsync(Review review);
-        Task<IEnumerable<Review>> GetAllReviewsAsync(string userId);
-        void SoftRmoveAsync(int reviewId);
+        Task SoftRmoveAsync(int reviewId);
     }
 }
