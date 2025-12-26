@@ -245,7 +245,7 @@ namespace Tourist.PERSISTENCE.Migrations
 
                     b.HasKey("CategoryId");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("Tourist.DOMAIN.model.City", b =>
@@ -268,7 +268,7 @@ namespace Tourist.PERSISTENCE.Migrations
 
                     b.HasIndex("Name");
 
-                    b.ToTable("Cities");
+                    b.ToTable("Cities", (string)null);
                 });
 
             modelBuilder.Entity("Tourist.DOMAIN.model.Country", b =>
@@ -286,7 +286,7 @@ namespace Tourist.PERSISTENCE.Migrations
 
                     b.HasIndex("Name");
 
-                    b.ToTable("Countries");
+                    b.ToTable("Countries", (string)null);
                 });
 
             modelBuilder.Entity("Tourist.DOMAIN.model.Hotel", b =>
@@ -325,7 +325,7 @@ namespace Tourist.PERSISTENCE.Migrations
 
                     b.HasIndex("CityId");
 
-                    b.ToTable("Hotels");
+                    b.ToTable("Hotels", (string)null);
                 });
 
             modelBuilder.Entity("Tourist.DOMAIN.model.Notification", b =>
@@ -358,7 +358,7 @@ namespace Tourist.PERSISTENCE.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Norifications");
+                    b.ToTable("Norifications", (string)null);
                 });
 
             modelBuilder.Entity("Tourist.DOMAIN.model.Payment", b =>
@@ -393,7 +393,7 @@ namespace Tourist.PERSISTENCE.Migrations
 
                     b.HasIndex("TripId");
 
-                    b.ToTable("Payments");
+                    b.ToTable("Payments", (string)null);
                 });
 
             modelBuilder.Entity("Tourist.DOMAIN.model.Place", b =>
@@ -430,7 +430,7 @@ namespace Tourist.PERSISTENCE.Migrations
 
                     b.HasIndex("Name");
 
-                    b.ToTable("Places");
+                    b.ToTable("Places", (string)null);
                 });
 
             modelBuilder.Entity("Tourist.DOMAIN.model.Review", b =>
@@ -465,7 +465,7 @@ namespace Tourist.PERSISTENCE.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Reviews");
+                    b.ToTable("Reviews", (string)null);
                 });
 
             modelBuilder.Entity("Tourist.DOMAIN.model.Trip", b =>
@@ -506,7 +506,7 @@ namespace Tourist.PERSISTENCE.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Trips");
+                    b.ToTable("Trips", (string)null);
                 });
 
             modelBuilder.Entity("Tourist.DOMAIN.model.TripActivity", b =>
@@ -535,7 +535,7 @@ namespace Tourist.PERSISTENCE.Migrations
 
                     b.HasIndex("TripId");
 
-                    b.ToTable("Activities");
+                    b.ToTable("Activities", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

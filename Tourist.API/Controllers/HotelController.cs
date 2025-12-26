@@ -63,6 +63,18 @@ namespace Tourist.API.Controllers
 
             return Ok("Hotel deleted successfully");
         }
+        //  NEAR ME
+        [HttpGet("near")]
+        public async Task<IActionResult> GetNearHotels([FromServices]GetNearHotelUseCase _hotelUseCase,
+            [FromQuery] double lat,
+            [FromQuery] double lng,
+            [FromQuery] double distanceKm = 5)
+        {
+            var hotels = await _hotelUseCase
+                .GetHotelsNearAsync(lat, lng, distanceKm);
+
+            return Ok(hotels);
+        }
     }
 
 }
