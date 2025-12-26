@@ -56,7 +56,7 @@ namespace Tourist.APPLICATION.Service.EmailService
 
                     await client.SendAsync(message);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
 
                     throw new Exception("Email send Failed", ex);
@@ -66,7 +66,7 @@ namespace Tourist.APPLICATION.Service.EmailService
                     await client.DisconnectAsync(true);
                     client.Dispose();
                 }
-                
+
             }
 
         }

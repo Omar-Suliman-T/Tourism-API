@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Tourist.APPLICATION.Interface;
-using Tourist.DOMAIN.model;
 
 namespace Tourist.APPLICATION.UseCase.Hotel
 {
@@ -15,11 +15,15 @@ namespace Tourist.APPLICATION.UseCase.Hotel
         {
             _unitOfWork = unitOfWork;
         }
-        // ================= GET ALL =================
-        public async Task<IEnumerable<Tourist.DOMAIN.model.Hotel>> ExcuteAsync()
+        public async Task<(HttpStatusCode, DOMAIN.model.Hotel)> ExecuteAsync(int HotelId)
         {
-            return await _unitOfWork.Hotel.GetAllAsync(c=>true,includeProperities: "City");
+
+            var hotel = await _unitOfWork.Hotel.GetAsync(h => h.HotelId == HotelId && h.IsDeleted == false);
+            if (hotel == null)
+            {
+                return (HttpStatusCode.NotFound, new DOMAIN.model.Hotel());
+            }
+            return (HttpStatusCode.OK, hotel);
         }
     }
 }
- 

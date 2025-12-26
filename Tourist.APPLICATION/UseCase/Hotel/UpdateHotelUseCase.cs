@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Tourist.APPLICATION.DTO.Hotel;
 using Tourist.APPLICATION.Interface;
 
 namespace Tourist.APPLICATION.UseCase.Hotel
@@ -14,25 +16,31 @@ namespace Tourist.APPLICATION.UseCase.Hotel
         {
             _unitOfWork = unitOfWork;
         }
-        // ================= UPDATE =================
-        public async Task<bool> ExcuteAsync(int id, Tourist.DOMAIN.model.Hotel updatedHotel)
+        public async Task<(HttpStatusCode, string)> ExecuteAsync(UpdateHotelDTO hotelDto)
         {
-            var hotel = await _unitOfWork.Hotel.GetAsync(h => h.HotelId == id);
+            try
+            {
 
-            if (hotel == null)
-                return false;
-
-            hotel.Name = updatedHotel.Name;
-            hotel.Description = updatedHotel.Description;
-            hotel.PricePerNight = updatedHotel.PricePerNight;
-            hotel.Stars = updatedHotel.Stars;
-            hotel.Address = updatedHotel.Address;
-            hotel.Phone = updatedHotel.Phone;
-            hotel.ImageUrl = updatedHotel.ImageUrl;
-            hotel.CityId = updatedHotel.CityId;
-
-            await _unitOfWork.SaveChangesAsync();
-            return true;
+                var hotel = await _unitOfWork.Hotel.GetAsync(h => h.HotelId == hotelDto.HotelId && h.IsDeleted == false);
+                if (hotel == null)
+                {
+                    return (HttpStatusCode.NotFound, "Hotel Not Found");
+                }
+                hotel.Name = hotelDto.Name;
+                hotel.Description = hotelDto.Description;
+                hotel.Stars = hotelDto.Stars;
+                hotel.PricePerNight = hotelDto.PricePerNight;
+                hotel.Address = hotelDto.Address;
+                hotel.Phone = hotelDto.Phone;
+                hotel.ImageUrl = hotelDto.ImageUrl;
+                await _unitOfWork.SaveChangesAsync();
+                return (HttpStatusCode.OK, "Hotel Updated Successfully");
+            }
+            catch (Exception ex)
+            {
+                return (HttpStatusCode.InternalServerError, ex.Message);
+            }
         }
+
     }
 }

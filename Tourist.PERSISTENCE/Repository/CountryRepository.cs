@@ -15,5 +15,10 @@ namespace Tourist.PERSISTENCE.Repository
         {
             _context = context;
         }
+
+        public void UpdateAsync(Country country)
+        {
+             _context.Update(country);
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Tourist.APPLICATION.Interface;
@@ -14,17 +15,23 @@ namespace Tourist.APPLICATION.UseCase.Hotel
         {
             _unitOfWork = unitOfWork;
         }
-        // ================= DELETE =================
-        public async Task<bool> ExcuteAsync(int id)
+        public async Task<(HttpStatusCode, string)> ExecuteAsync(int HotelId)
         {
-            var hotel = await _unitOfWork.Hotel.GetAsync(h => h.HotelId == id);
-
-            if (hotel == null)
-                return false;
-
-            await _unitOfWork.Hotel.RemoveAsync(hotel);
-            await _unitOfWork.SaveChangesAsync();
-            return true;
+            try
+            {
+                var hotel = await _unitOfWork.Hotel.GetAsync(h => h.HotelId == HotelId && h.IsDeleted == false);
+                if (hotel == null)
+                {
+                    return (HttpStatusCode.NotFound, "Hotel Not Found");
+                }
+                hotel.IsDeleted = true;
+                await _unitOfWork.SaveChangesAsync();
+                return (HttpStatusCode.OK, "Hotel Deleted Successfully");
+            }
+            catch (Exception ex)
+            {
+                return (HttpStatusCode.InternalServerError, ex.Message);
+            }
         }
     }
 }

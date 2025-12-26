@@ -9,6 +9,6 @@ namespace Tourist.APPLICATION.Interface
 {
     public interface ICountryRepository : IRepository<Country>
     {
-
+        public void UpdateAsync(Country country);
     }
 }
