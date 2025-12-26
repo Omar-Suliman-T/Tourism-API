@@ -14,6 +14,6 @@ namespace Tourist.DOMAIN.model
         public string? Description { get; set; }
         public double Price { get; set; }
         public int DurationDays { get; set; }
-        public ICollection<TourMonument> TourMonuments { get; set; } = new List<TourMonument>();
+        //public ICollection<TourMonument> TourMonuments { get; set; } = new List<TourMonument>();
     }
 }

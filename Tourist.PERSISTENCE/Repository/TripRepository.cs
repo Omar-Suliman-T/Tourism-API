@@ -38,6 +38,5 @@ namespace Tourist.PERSISTENCE.Repository
 
             trip.IsDeleted = true;
         }
-
     }
 }

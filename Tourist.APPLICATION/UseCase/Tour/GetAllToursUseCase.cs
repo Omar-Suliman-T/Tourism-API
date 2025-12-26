@@ -17,7 +17,7 @@ namespace Tourist.APPLICATION.UseCase.Tour
         }
         public async Task<IEnumerable<Tourist.DOMAIN.model.Tour>> ExecuteAsync()
         {
-            return  await _unitOfWork.Tour.GetAllAsync(includeProperities: "TourMonuments.Monument");
+            return  await _unitOfWork.Tour.GetAllAsync();
         }
 
     }

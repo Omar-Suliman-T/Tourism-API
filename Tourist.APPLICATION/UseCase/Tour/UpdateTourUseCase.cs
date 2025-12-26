@@ -20,7 +20,7 @@ namespace Tourist.APPLICATION.UseCase.Tour
         }
         public async Task<(HttpStatusCode,DOMAIN.model.Tour)> ExeucuteAsync(int id, TourDto dto)
         {
-            var tour = await _unitOfWork.Tour.GetAsync(t => t.Id == id, includeProperities: "TourMonuments");
+            var tour = await _unitOfWork.Tour.GetAsync(t => t.Id == id);
 
             if (tour == null) return (HttpStatusCode.NotFound,null!);
 
@@ -28,13 +28,6 @@ namespace Tourist.APPLICATION.UseCase.Tour
             tour.Description = dto.Description;
             tour.Price = dto.Price;
             tour.DurationDays = dto.DurationDays;
-
-            tour.TourMonuments.Clear();
-            if (dto.MonumentIds != null)
-            {
-                foreach (var monumentId in dto.MonumentIds)
-                    tour.TourMonuments.Add(new TourMonument { MonumentId = monumentId, TourId = id });
-            }
 
             await _unitOfWork.SaveChangesAsync();
             return(HttpStatusCode.OK, tour);

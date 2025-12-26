@@ -5,7 +5,7 @@ using Tourist.APPLICATION.UseCase.Country;
 
 namespace Tourist.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class CountryController : ControllerBase
     {

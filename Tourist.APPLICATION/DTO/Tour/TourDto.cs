@@ -17,6 +17,6 @@ namespace Tourist.APPLICATION.DTO.TourDto
         [Required]
         public int DurationDays { get; set; }
 
-        public List<int>? MonumentIds { get; set; }
+        //public List<int>? MonumentIds { get; set; }
     }
 }

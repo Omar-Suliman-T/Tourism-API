@@ -18,7 +18,7 @@ namespace Tourist.APPLICATION.UseCase.Trip
 
         public async Task ExecuteAsync(int tripId)
         {
-             _unitOfWork.Trip.SoftRmoveAsync(tripId);
+            await _unitOfWork.Trip.SoftRmoveAsync(tripId);
             await _unitOfWork.SaveChangesAsync();
         }
     }

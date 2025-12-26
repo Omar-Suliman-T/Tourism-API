@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
@@ -23,7 +23,7 @@ namespace Tourist.PERSISTENCE.Repository
         private readonly ILogger<UnitOfWork> _logger;
         private readonly ILoggerFactory _loggerFactory;
         private readonly ApplicationDbContext _context;
-        private readonly IRepository<Trip> _repository;
+        //private readonly ITripRepository Trip { get; private set; }
         public ICountryRepository Country { get; private set; }
         public ICityRepository City { get; private set; }
         public IPlaceRepository Place { get; private set; }
@@ -31,9 +31,12 @@ namespace Tourist.PERSISTENCE.Repository
         public ITripRepository Trip { get; private set; }
         public IPaymentRepository Payment { get; private set; }
         public IReviewRepository Review { get; private set; }
+
         public ITourRepository Tour { get; private set; }
         public IMonumentRepository Monument { get; private set; }
 
+        public IAuth Auth { get; private set; }
+        public IUser User { get; private set; }
 
         public UnitOfWork(
             UserManager<ApplicationUser> userManager,
@@ -43,9 +46,9 @@ namespace Tourist.PERSISTENCE.Repository
             IOptions<JWTDTOs> jwt,
             ILogger<UnitOfWork>logger,
             ILoggerFactory loggerFactory,
-            ApplicationDbContext context,
-            IRepository<Trip> repository,
-            IReviewRepository review
+            ApplicationDbContext context
+            //IRepository<Trip> repository,
+            //IReviewRepository review
             )
         {
             _userManager = userManager;
@@ -55,9 +58,9 @@ namespace Tourist.PERSISTENCE.Repository
             _logger = logger;
             _loggerFactory = loggerFactory;
             _context = context;
-            _repository = repository;
+            //_repository = repository;
             _context = context;
-            Review = review;
+            //Review = review;
 
             // إنشاء AuthRepository بشكل صحيح
             Country = new CountryRepository(_context);
@@ -65,31 +68,28 @@ namespace Tourist.PERSISTENCE.Repository
             Place = new PlaceRepository(_context);
             Hotel = new HotelRepository(_context);
             Payment = new PaymentRepository(_context);
-            Trip =new TripRepository(_context,_repository);
             Tour = new TourRepository(_context);
             Monument = new MonumentRepository(_context);
+            User = new UserRepository(_context);
+            Trip = new TripRepository(_context);
+            Review = new ReviewRepository(_context);
+
 
         }
 
-        public IAuth Auth { get; private set; }
-        public IUser User { get; private set; }
-
-       
-
-        public async Task<int>CompleteAsync()
-        {
-            return 1;
-            //throw new NotImplementedException();
-        }
-
-        public void Dispose()
-        {
-            //throw new NotImplementedException();
-        }
 
         public async Task SaveChangesAsync()
         {
           await _context.SaveChangesAsync();  
+        }
+        public async Task<int> CompleteAsync()
+        {
+            return await _context.SaveChangesAsync();
+        }
+
+        public void Dispose()
+        {
+            _context.Dispose();
         }
     }
 }

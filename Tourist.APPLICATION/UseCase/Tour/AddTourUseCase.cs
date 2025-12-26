@@ -27,14 +27,7 @@ namespace Tourist.APPLICATION.UseCase.Tour
                 DurationDays = dto.DurationDays
             };
 
-            if (dto.MonumentIds != null)
-            {
-                foreach (var monumentId in dto.MonumentIds)
-                {
-                    tour.TourMonuments.Add(new TourMonument { MonumentId = monumentId });
-                }
-            }
-
+           
             await _unitOfWork.Tour.AddAsync(tour);
             await _unitOfWork.SaveChangesAsync();
             return tour;

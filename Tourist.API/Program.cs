@@ -35,16 +35,18 @@ namespace Tourist.API
             // Add services to the container.
             var EmailConfig = builder.Configuration.GetSection("EmailConfiguration")
                 .Get<EmailCofiguration>();
+
             builder.Services.AddSingleton(EmailConfig);
+
             builder.Services.AddScoped<IEmailSender, EmailSender>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
             builder.Services.AddScoped<RegisterUseCase>();
             builder.Services.AddScoped<ForgetPasswordUseCase>();
             builder.Services.AddScoped<ResetPasswordUseCase>();
             builder.Services.AddScoped<ConfirmEmailUseCase>();
             builder.Services.AddScoped<GoogleAuthUseCase>();
             builder.Services.AddScoped<RegisterMap>();
-            builder.Services.AddScoped<HotelUseCase>();
 
 
             builder.Services.AddScoped<AddCountryUseCase>();
@@ -71,11 +73,6 @@ namespace Tourist.API
             builder.Services.AddScoped<DeleteMonumentUseCase>();
             builder.Services.AddScoped<GetMonumentUseCase>();
             builder.Services.AddScoped<GetAllMonumentsUseCase>();
-
-            builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-
-            builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
-
 
             builder.Services.AddScoped<ChangePasswordUseCase>();
             builder.Services.AddScoped<AddReviewUseCase>();
@@ -157,6 +154,7 @@ namespace Tourist.API
             app.UseMiddleware<ExceptionHandlingMiddleware>();
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
 

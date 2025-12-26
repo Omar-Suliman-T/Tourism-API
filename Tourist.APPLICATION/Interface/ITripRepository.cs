@@ -7,7 +7,7 @@ using Tourist.DOMAIN.model;
 
 namespace Tourist.APPLICATION.Interface
 {
-    public interface ITripRepository
+    public interface ITripRepository: IRepository<Trip>
     {
         Task<Trip?> GetActiveTripByIdAsync(string userId);
         Task SoftRmoveAsync(int tripId);

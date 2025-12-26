@@ -19,7 +19,7 @@ namespace Tourist.APPLICATION.UseCase.Tour
         }
         public async Task<(HttpStatusCode,DOMAIN.model.Tour)> ExecuteAsync(int id)
         {
-            var tour = await _unitOfWork.Tour.GetAsync(t => t.Id == id, includeProperities: "TourMonuments.Monument");
+            var tour = await _unitOfWork.Tour.GetAsync(t => t.Id == id);
             if (tour == null)
             {
                 return (HttpStatusCode.NotFound, null);

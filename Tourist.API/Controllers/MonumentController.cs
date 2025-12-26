@@ -8,6 +8,7 @@ using Tourist.DOMAIN.model;
 
 namespace Tourist.API.Controllers
 {
+
     [Route("api/[controller]")]
     [ApiController]
     public class MonumentController : ControllerBase
