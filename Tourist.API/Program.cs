@@ -35,9 +35,12 @@ namespace Tourist.API
             // Add services to the container.
             var EmailConfig = builder.Configuration.GetSection("EmailConfiguration")
                 .Get<EmailCofiguration>();
+
             builder.Services.AddSingleton(EmailConfig);
+
             builder.Services.AddScoped<IEmailSender, EmailSender>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
             builder.Services.AddScoped<RegisterUseCase>();
             builder.Services.AddScoped<ForgetPasswordUseCase>();
             builder.Services.AddScoped<ResetPasswordUseCase>();
@@ -71,9 +74,7 @@ namespace Tourist.API
             builder.Services.AddScoped<GetMonumentUseCase>();
             builder.Services.AddScoped<GetAllMonumentsUseCase>();
 
-            builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
-            builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 
 
 
@@ -157,6 +158,7 @@ namespace Tourist.API
             app.UseMiddleware<ExceptionHandlingMiddleware>();
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
 

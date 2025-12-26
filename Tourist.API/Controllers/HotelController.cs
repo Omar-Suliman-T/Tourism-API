@@ -6,7 +6,7 @@ using Tourist.DOMAIN.model;
 
 namespace Tourist.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class HotelController : ControllerBase
     {
