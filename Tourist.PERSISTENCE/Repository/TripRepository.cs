@@ -38,10 +38,5 @@ namespace Tourist.PERSISTENCE.Repository
 
             trip.IsDeleted = true;
         }
-
-        void ITripRepository.SoftRmoveAsync(int tripId)
-        {
-            //throw new NotImplementedException();
-        }
     }
 }
