@@ -7,7 +7,8 @@ using Tourist.DOMAIN.model;
 
 namespace Tourist.APPLICATION.Interface
 {
-    public interface IReviewRepository:IRepository<Review>
+    public interface IReviewRepository: IRepository<Review>    
     {
+        Task SoftRmoveAsync(int reviewId);
     }
 }

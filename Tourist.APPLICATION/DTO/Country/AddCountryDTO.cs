@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Tourist.APPLICATION.DTO.Review
+namespace Tourist.APPLICATION.DTO.Country
 {
-    public class ReviewDTO
+    public class AddCountryDTO
     {
+        public string Name { get; set; }
     }
 }

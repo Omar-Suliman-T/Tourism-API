@@ -1,6 +1,7 @@
 ﻿using Google.Apis.Auth;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -26,11 +27,13 @@ namespace Tourist.PERSISTENCE.Repository
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly JWTDTOs _jwt;
         private readonly IEmailSender _emailSender;
+        private readonly ILogger<AuthRepository> _logger;
         private readonly IConfiguration _configuration;
 
         public AuthRepository(
             UserManager<ApplicationUser> userManager,
             IEmailSender emailSender,
+            ILogger<AuthRepository>logger,
             IConfiguration configuration,
             IOptions<JWTDTOs> jwt)
         {
@@ -38,6 +41,7 @@ namespace Tourist.PERSISTENCE.Repository
             _emailSender = emailSender ?? throw new ArgumentNullException(nameof(emailSender));
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             _jwt = jwt?.Value ?? throw new ArgumentNullException(nameof(jwt));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
         public async Task<(HttpStatusCode, string)> ChangePasswodAsync(ClaimsPrincipal claims, ChangePasswordRequestDTO request)
         {
@@ -109,6 +113,7 @@ namespace Tourist.PERSISTENCE.Repository
                 { "token", encodedToken },
                 { "email", newUser.Email! }
             };
+            _logger.LogInformation("Token IS : {encodedToken}", encodedToken);
             var callBack = QueryHelpers.AddQueryString(clientUri!, param);
 
             #region Read Html file

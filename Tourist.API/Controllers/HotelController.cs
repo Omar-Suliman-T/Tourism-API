@@ -1,69 +1,60 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Tourist.APPLICATION.DTO.Hotel;
 using Tourist.APPLICATION.UseCase.Hotel;
 using Tourist.DOMAIN.model;
 
 namespace Tourist.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class HotelController : ControllerBase
     {
-        // ================= CREATE =================
-        [HttpPost]
-        public async Task<IActionResult> CreateHotel([FromBody] Hotel hotel, [FromServices]CreateHotelUseCase createHotel)
+        
+
+        [HttpGet("get/{Id:int}")]
+        public async Task<ActionResult> GetByIdAsync([FromServices]GetHotelUseCase getHotelUseCase,int Id)
+        {
+            var hotel = await getHotelUseCase.ExecuteAsync(Id);
+            return StatusCode((int)hotel.Item1, hotel.Item2);
+        }
+
+        [HttpGet("getAll")]
+        public async Task<ActionResult> GetAllAsync([FromServices] GetAllHotelUseCase getAllHotelUseCase)
+        {
+            var hotel = await getAllHotelUseCase.ExecuteAsync();
+            return StatusCode((int)hotel.Item1, hotel.Item2);
+        }
+        [HttpPost("add")]
+        public async Task<ActionResult<string>> AddHotelAsync([FromServices]AddHotelUseCase addHotelUseCase,[FromBody] AddHotelDTO hotelDTO)
         {
             if (!ModelState.IsValid)
+            {
                 return BadRequest(ModelState);
-
-            await createHotel.ExcuteAsync(hotel);
-            return Ok("Hotel created successfully");
+            }
+            var hotel = await addHotelUseCase.ExecuteAsync(hotelDTO);
+            return StatusCode((int)hotel.Item1, hotel.Item2);
         }
-
-        // ================= GET ALL =================
-        [HttpGet]
-        public async Task<IActionResult> GetAllHotels([FromServices] GetHotelUseCase getHotel)
+        [HttpPut("update")]
+        public async Task<ActionResult<string>> UpdateHotelAsync([FromServices]UpdateHotelUseCase updateHotelUseCase,[FromBody] UpdateHotelDTO hotelDTO)
         {
-            var hotels = await getHotel.ExcuteAsync();
-            return Ok(hotels);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var hotel = await updateHotelUseCase.ExecuteAsync(hotelDTO);
+            return StatusCode((int)hotel.Item1, hotel.Item2);
         }
-
-        // ================= GET BY ID =================
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetHotelById(int id, [FromServices] GetByIdHotelUseCase getHotel)
+        [HttpDelete("delete/{Id:int}")]
+        public async Task<ActionResult<string>> DeleteHotelAsync([FromServices]DeleteHotelUseCase deleteHotelUseCase,[FromRoute]int Id)
         {
-            var hotel = await getHotel.ExcuteAsync(id);
-
-            if (hotel == null)
-                return NotFound("Hotel not found");
-
-            return Ok(hotel);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var hotel = await deleteHotelUseCase.ExecuteAsync(Id);
+            return StatusCode((int)hotel.Item1, hotel.Item2);
         }
 
-        // ================= UPDATE =================
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateHotel(int id, [FromBody] Hotel hotel, [FromServices] UpdateHotelUseCase updateHotel)
-        {
-            var result = await updateHotel.ExcuteAsync(id, hotel);
-
-            if (!result)
-                return NotFound("Hotel not found");
-
-            return Ok("Hotel updated successfully");
-        }
-
-        // ================= DELETE =================
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteHotel(int id, [FromServices]  DeleteHotelUseCase deletetHotel)
-        {
-            var result = await deletetHotel.ExcuteAsync(id);
-
-            if (!result)
-                return NotFound("Hotel not found");
-
-            return Ok("Hotel deleted successfully");
-        }
     }
-
 }
-

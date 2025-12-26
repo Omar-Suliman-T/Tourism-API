@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Tourist.APPLICATION.DTO.Hotel
+namespace Tourist.APPLICATION.Mapping
 {
-    public class HotelDTO
+    public class ApplicationAssemblyMarker
     {
     }
 }
