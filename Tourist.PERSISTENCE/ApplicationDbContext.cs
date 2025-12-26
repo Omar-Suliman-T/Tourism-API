@@ -149,10 +149,13 @@ namespace Tourist.PERSISTENCE
                 }
             );
 
-       
-            builder.Entity<Review>()
-                .Property(t => t.CreatedAt)
+
+            builder.Entity<Review>(e =>
+            {
+                e.Property(r => r.CreatedAt)
                 .HasDefaultValueSql("GETDATE()");
+                e.Property(r => r.ReviewId).UseIdentityColumn();
+            });
 
             builder.Entity<Notification>(entity =>
             {
@@ -196,11 +199,20 @@ namespace Tourist.PERSISTENCE
                     .HasForeignKey(f => f.CategoryId)
                     .OnDelete(DeleteBehavior.NoAction));
 
-            builder.Entity<Hotel>(h => 
-                    h.HasMany(m => m.Trips)
-                    .WithOne(h=> h.Hotel)
-                    .HasForeignKey(t => t.HotelId)
-                    .OnDelete(DeleteBehavior.NoAction));                   
+            builder.Entity<Hotel>(h =>
+            {
+                h.HasMany(m => m.Trips)
+                .WithOne(h => h.Hotel)
+                .HasForeignKey(t => t.HotelId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+                h.HasMany(h => h.Reviews)
+                .WithOne(r => r.Hotel)
+                .HasForeignKey(h => h.HotelId)
+                .OnDelete(DeleteBehavior.NoAction);
+            });
+
+
 
             builder.Entity<Place>(p => 
                     p.HasMany(p => p.Activities)

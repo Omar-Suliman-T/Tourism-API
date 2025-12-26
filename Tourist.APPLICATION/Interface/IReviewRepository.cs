@@ -7,7 +7,9 @@ using Tourist.DOMAIN.model;
 
 namespace Tourist.APPLICATION.Interface
 {
-    public interface IReviewRepository:IRepository<Review>
+    public interface IReviewRepository : IRepository<Review>
     {
+        Task<IEnumerable<Review>> GetAllWithDetailsAsync();
+        Task<Review?> GetByIdWithDetailsAsync(int id);
     }
 }

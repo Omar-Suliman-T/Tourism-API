@@ -23,5 +23,6 @@ namespace Tourist.DOMAIN.model
         public int CityId { get; set; }
         public City? City { get; set; }
         public IEnumerable<Trip>? Trips { get; set; }
+        public IEnumerable<Review>? Reviews { get; set; }
     }
 }

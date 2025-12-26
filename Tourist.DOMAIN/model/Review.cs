@@ -22,13 +22,18 @@ namespace Tourist.DOMAIN.model
         public Rating Rating { get; set; }
         public string? Comment { get; set; }
         public DateTime CreatedAt { get; set; }
+        public string? imageUrl { get; set; }
 
         [ForeignKey("Trip")]
-        public int TripId { get; set; }
+        public int? TripId { get; set; }
+
+        [ForeignKey("Hotel")]
+        public int? HotelId { get; set; }
 
         [ForeignKey("User")]
         public string UserId { get; set; } = string.Empty;
         public Trip? Trip { get; set; }
         public ApplicationUser? User { get; set; }
+        public Hotel? Hotel { get; set; }
     }
 }

@@ -18,6 +18,7 @@ namespace Tourist.DOMAIN.model
     }
     public class Trip: BaseEntity
     {
+        public string Name { get; set; }
         public int TripId { get; set; }
         public double TotalPrice { get; set; }
         public DateTime StartDate { get; set; }

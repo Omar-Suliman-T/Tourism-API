@@ -6,15 +6,14 @@ using System.Text;
 using System.Threading.Tasks;
 using Tourist.DOMAIN.model;
 
+
 namespace Tourist.APPLICATION.DTO.Review
 {
-    public class ReviewDTO
+    public class CreateReviewDTOs
     {
-        public int ReviewId { get; set; }
         public Rating Rating { get; set; }
         public string? Comment { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public string? imageUrl { get; set; }
+        public string? image { get; set; }
 
         public int? TripId { get; set; }
 

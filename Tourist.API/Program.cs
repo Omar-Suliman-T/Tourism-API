@@ -6,13 +6,15 @@ using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 using System.Reflection;
 using System.Text;
-using Tourist.API.Middleware; 
+using Tourist.API.Middleware;
+using Tourist.API.Services.UploadService;
 using Tourist.APPLICATION.DTO.Auth;
 using Tourist.APPLICATION.Interface;
 using Tourist.APPLICATION.Mapping.Auth;
 using Tourist.APPLICATION.Service.EmailService;
 using Tourist.APPLICATION.UseCase.Auth;
 using Tourist.APPLICATION.UseCase.Notification;
+using Tourist.APPLICATION.UseCase.Review;
 using Tourist.DOMAIN.model;
 using Tourist.PERSISTENCE;
 using Tourist.PERSISTENCE.Repository;
@@ -34,9 +36,11 @@ namespace Tourist.API
             builder.Services.AddScoped<RegisterUseCase>();
             builder.Services.AddScoped<ForgetPasswordUseCase>();
             builder.Services.AddScoped<ResetPasswordUseCase>();
-            builder.Services.AddScoped <ConfirmEmailUseCase>();
+            builder.Services.AddScoped<ConfirmEmailUseCase>();
             builder.Services.AddScoped<GoogleAuthUseCase>();
-            builder.Services.AddScoped< NotificationUseCase>();
+            builder.Services.AddScoped<NotificationUseCase>();
+            builder.Services.AddScoped<ReviewUseCase>();
+            builder.Services.AddScoped<UploadService>();
 
             builder.Services.AddScoped<RegisterMap>();
 
@@ -99,6 +103,7 @@ namespace Tourist.API
             builder.Services.AddOpenApi();
 
             var app = builder.Build();
+            app.UseStaticFiles();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
