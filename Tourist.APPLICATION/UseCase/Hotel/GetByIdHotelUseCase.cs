@@ -10,15 +10,15 @@ namespace Tourist.APPLICATION.UseCase.Hotel
 {
     public class GetByIdHotelUseCase
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IUnitOfWork unitOfWork;
         public GetByIdHotelUseCase(IUnitOfWork unitOfWork)
         {
-            _unitOfWork = unitOfWork;
+            this.unitOfWork = unitOfWork;
         }
         // ================= GET BY ID =================
         public async Task<Tourist.DOMAIN.model.Hotel?> ExcuteAsync(int id)
         {
-            return await _unitOfWork.Hotel
+            return await unitOfWork.Hotel
                 .GetAsync(h => h.HotelId == id, includeProperities: "City");
         }
     }
