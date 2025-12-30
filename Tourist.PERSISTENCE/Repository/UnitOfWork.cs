@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using System;
@@ -19,9 +20,9 @@ namespace Tourist.PERSISTENCE.Repository
         private readonly IEmailSender _emailSender;
         private readonly IConfiguration _configuration;
         private readonly JWTDTOs _jwt;
+        private readonly ILogger<UnitOfWork> _logger;
+        private readonly ILoggerFactory _loggerFactory;
         private readonly ApplicationDbContext _context;
-        public IUser User { get; private set; }
-        public IAuth Auth { get; private set; }
         public ICountryRepository Country { get; private set; }
         public ICityRepository City { get; private set; }
         public IPlaceRepository Place { get; private set; }
@@ -31,47 +32,66 @@ namespace Tourist.PERSISTENCE.Repository
         public IPaymentRepository Payment { get; private set; }
         public INotificationRepository Notification {  get; private set; }
 
+        public ITourRepository Tour { get; private set; }
+        public IMonumentRepository Monument { get; private set; }
+
+        public IAuth Auth { get; private set; }
+        public IUser User { get; private set; }
 
         public UnitOfWork(
-            UserManager<ApplicationUser> userManager, 
+            UserManager<ApplicationUser> userManager,
             IEmailSender emailSender,
-            IOptions<JWTDTOs> jwt,
             IConfiguration configuration,
-            ApplicationDbContext context)
+
+            IOptions<JWTDTOs> jwt,
+            ILogger<UnitOfWork>logger,
+            ILoggerFactory loggerFactory,
+            ApplicationDbContext context
+            //IRepository<Trip> repository,
+            //IReviewRepository review
+            )
         {
             _userManager = userManager;
             _emailSender = emailSender;
             _configuration = configuration;
-            _context = context;
             _jwt = jwt.Value;
+            _logger = logger;
+            _loggerFactory = loggerFactory;
+            _context = context;
+            //_repository = repository;
+            _context = context;
+            //Review = review;
 
-            Auth = new AuthRepository(_userManager, _emailSender, _configuration, Options.Create(_jwt));
+            //Auth = new AuthRepository(_userManager, _emailSender, _configuration, Options.Create(_jwt));
             Country = new CountryRepository(_context);
             City = new CityRepository(_context);
             Place = new PlaceRepository(_context);
-            Hotel= new HotelRepository(_context);
+            Hotel = new HotelRepository(_context);
             Payment = new PaymentRepository(_context);
-            Trip =new TripRepository(_context);
-            Review =new ReviewRepository(_context);
-            Notification =new NotificationRepository(_context);
-            _context = context;
+            Tour = new TourRepository(_context);
+            Monument = new MonumentRepository(_context);
+            User = new UserRepository(_context);
+            Trip = new TripRepository(_context);
+            Review = new ReviewRepository(_context);
+            Notification = new NotificationRepository(_context);
+
+
         }
 
-
-
-        public Task<int> CompleteAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Dispose()
-        {
-            throw new NotImplementedException();
-        }
+       
 
         public async Task SaveChangesAsync()
         {
           await _context.SaveChangesAsync();  
+        }
+        public async Task<int> CompleteAsync()
+        {
+            return await _context.SaveChangesAsync();
+        }
+
+        public void Dispose()
+        {
+            _context.Dispose();
         }
     }
 }

@@ -12,7 +12,7 @@ namespace Tourist.PERSISTENCE.Repository
     public class ReviewRepository : Repository<Review>, IReviewRepository
     {
         private readonly ApplicationDbContext _context;
-        public ReviewRepository(ApplicationDbContext context) : base(context)
+        public ReviewRepository(ApplicationDbContext context): base(context) 
         {
             _context = context;
         }

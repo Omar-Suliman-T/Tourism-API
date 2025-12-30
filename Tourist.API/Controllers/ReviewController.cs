@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Tourist.API.ApiDTOs.Review;
 using Tourist.API.Services.UploadService;
 using Tourist.APPLICATION.DTO.Review;
 using Tourist.APPLICATION.UseCase.Review;
+using Tourist.APPLICATION.UseCase.Trip;
 
 namespace Tourist.API.Controllers
 {
@@ -74,7 +76,7 @@ namespace Tourist.API.Controllers
                 imageUrl = await _uploadService.UploadReviewImageAsync(dto.Image);
 
             var appDto = new UpdateReviewDTOs
-            {
+        {
                 ReviewId = dto.ReviewId,
                 Rating = dto.Rating,
                 Comment = dto.Comment,

@@ -16,10 +16,12 @@ namespace Tourist.APPLICATION.Interface
         ICityRepository City{get;} 
         IPlaceRepository Place{get;}    
         IHotelRepository Hotel{get;}      
-        ITripRepository Trip{get;}      
-        IPaymentRepository Payment{get;}    
+        ITripRepository Trip {get;}
         IReviewRepository Review { get; }
-        INotificationRepository Notification{get;}
+        IPaymentRepository Payment {get;}    
+        ITourRepository Tour {get;}    
+        IMonumentRepository Monument {get;}    
+        INotificationRepository Notification {get; }
         Task<int> CompleteAsync();
         public Task SaveChangesAsync();
     }

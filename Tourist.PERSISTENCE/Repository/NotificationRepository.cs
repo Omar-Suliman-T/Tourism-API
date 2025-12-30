@@ -23,22 +23,6 @@ namespace Tourist.PERSISTENCE.Repository
                                  .ToListAsync();
         }
 
-        public async Task SoftDeleteAsync(Notification entity)
-        {
-            entity.IsDeleted = true;
-            Update(entity); 
-            await Task.CompletedTask;
-        }
 
-       
-        public async Task SoftDeleteRangeAsync(IEnumerable<Notification> entities)
-        {
-            foreach (var entity in entities)
-            {
-                entity.IsDeleted = true;
-                Update(entity); 
-            }
-            await Task.CompletedTask;
-        }
     }
 }

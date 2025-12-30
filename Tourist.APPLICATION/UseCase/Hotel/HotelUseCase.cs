@@ -1,9 +1,13 @@
-﻿using System;
+﻿using FluentEmail.Core.Models;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Net;
+using Tourist.APPLICATION.DTO.Hotel;
 using Tourist.APPLICATION.Interface;
+using Tourist.DOMAIN.model;
 
 namespace Tourist.APPLICATION.UseCase.Hotel
 {
@@ -14,5 +18,9 @@ namespace Tourist.APPLICATION.UseCase.Hotel
         {
             _unitOfWork = unitOfWork;
         }
+        
+        
+       
+        
     }
 }

@@ -240,6 +240,9 @@ namespace Tourist.PERSISTENCE.Migrations
                     b.Property<string>("GoogleId")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 
@@ -294,8 +297,10 @@ namespace Tourist.PERSISTENCE.Migrations
                             Id = "aaaaaaaa-1111-1111-1111-aaaaaaaaaaaa",
                             AccessFailedCount = 0,
                             ConcurrencyStamp = "dddddddd-1111-1111-1111-dddddddddddd",
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "saifalkomi@gmail.com",
                             EmailConfirmed = true,
+                            IsActive = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "SAIFALKOMI@GMAIL.COM",
                             NormalizedUserName = "SAIF KOMI",
@@ -311,8 +316,10 @@ namespace Tourist.PERSISTENCE.Migrations
                             Id = "bbbbbbbb-2222-2222-2222-bbbbbbbbbbbb",
                             AccessFailedCount = 0,
                             ConcurrencyStamp = "ffffffff-2222-2222-2222-ffffffffffff",
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "omarsit20004031@gmail.com",
                             EmailConfirmed = true,
+                            IsActive = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "OMARSIT20004031@GMAIL.COM",
                             NormalizedUserName = "OMAR SULIMAN",
@@ -336,6 +343,9 @@ namespace Tourist.PERSISTENCE.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
@@ -354,6 +364,9 @@ namespace Tourist.PERSISTENCE.Migrations
 
                     b.Property<int>("CountryId")
                         .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(450)");
@@ -374,6 +387,9 @@ namespace Tourist.PERSISTENCE.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CountryId"));
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(450)");
@@ -405,6 +421,15 @@ namespace Tourist.PERSISTENCE.Migrations
                     b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<double>("Latitude")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Longitude")
+                        .HasColumnType("float");
+
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
@@ -424,6 +449,35 @@ namespace Tourist.PERSISTENCE.Migrations
                     b.ToTable("Hotels");
                 });
 
+            modelBuilder.Entity("Tourist.DOMAIN.model.Monument", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Location")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("YearBuilt")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Monuments");
+                });
+
             modelBuilder.Entity("Tourist.DOMAIN.model.Notification", b =>
                 {
                     b.Property<int>("NotificationId")
@@ -433,9 +487,10 @@ namespace Tourist.PERSISTENCE.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("NotificationId"));
 
                     b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsRead")
                         .HasColumnType("bit");
@@ -476,6 +531,9 @@ namespace Tourist.PERSISTENCE.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETDATE()");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<int?>("Method")
                         .HasColumnType("int");
 
@@ -508,6 +566,9 @@ namespace Tourist.PERSISTENCE.Migrations
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(450)");
@@ -545,23 +606,63 @@ namespace Tourist.PERSISTENCE.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETDATE()");
 
+                    b.Property<int?>("HotelId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<int>("Rating")
                         .HasColumnType("int");
 
-                    b.Property<int>("TripId")
+                    b.Property<int?>("TripId")
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("imageUrl")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("ReviewId");
+
+                    b.HasIndex("HotelId");
 
                     b.HasIndex("TripId");
 
                     b.HasIndex("UserId");
 
                     b.ToTable("Reviews");
+                });
+
+            modelBuilder.Entity("Tourist.DOMAIN.model.Tour", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("DurationDays")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Tours");
                 });
 
             modelBuilder.Entity("Tourist.DOMAIN.model.Trip", b =>
@@ -580,6 +681,13 @@ namespace Tourist.PERSISTENCE.Migrations
 
                     b.Property<int>("HotelId")
                         .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
@@ -612,6 +720,9 @@ namespace Tourist.PERSISTENCE.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ActivityId"));
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Notes")
                         .HasColumnType("nvarchar(max)");
@@ -750,17 +861,23 @@ namespace Tourist.PERSISTENCE.Migrations
 
             modelBuilder.Entity("Tourist.DOMAIN.model.Review", b =>
                 {
+                    b.HasOne("Tourist.DOMAIN.model.Hotel", "Hotel")
+                        .WithMany("Reviews")
+                        .HasForeignKey("HotelId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
                     b.HasOne("Tourist.DOMAIN.model.Trip", "Trip")
                         .WithMany("Reviews")
                         .HasForeignKey("TripId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("Tourist.DOMAIN.model.ApplicationUser", "User")
                         .WithMany("Reviews")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.Navigation("Hotel");
 
                     b.Navigation("Trip");
 
@@ -843,6 +960,8 @@ namespace Tourist.PERSISTENCE.Migrations
 
             modelBuilder.Entity("Tourist.DOMAIN.model.Hotel", b =>
                 {
+                    b.Navigation("Reviews");
+
                     b.Navigation("Trips");
                 });
 

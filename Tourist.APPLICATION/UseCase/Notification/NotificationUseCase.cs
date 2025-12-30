@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Tourist.APPLICATION.DTO.Notification;
 using Tourist.APPLICATION.Interface;
 using Tourist.DOMAIN.model;
-
 namespace Tourist.APPLICATION.UseCase.Notification
 {
     public class NotificationUseCase
@@ -53,14 +52,12 @@ namespace Tourist.APPLICATION.UseCase.Notification
 
         public async Task<int> CreateAsync(CreateNotificationDTOs dto)
         {
-            var notification = new Notification
+            var notification = new DOMAIN.model.Notification
             {
                 Message = dto.Message,
                 IsRead = dto.IsRead,
                 Type = dto.Type,
                 UserId = dto.UserId,
-                CreatedAt = DateTime.UtcNow,
-                IsDeleted = false
             };
 
             await _unitOfWork.Notification.AddAsync(notification);

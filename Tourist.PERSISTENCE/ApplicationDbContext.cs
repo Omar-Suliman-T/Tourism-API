@@ -30,6 +30,9 @@ namespace Tourist.PERSISTENCE
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Trip> Trips { get; set; }
         public DbSet<TripActivity> Activities { get; set; }
+        public DbSet<Tour> Tours { get; set; }
+        public DbSet<Monument> Monuments { get; set; }
+        //public DbSet<TourMonument> TourMonuments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -268,6 +271,19 @@ namespace Tourist.PERSISTENCE
 
             builder.Entity<Place>(c =>
                     c.HasIndex(e => e.Name));
+
+            //builder.Entity<TourMonument>()
+            //   .HasKey(tm => new { tm.TourId, tm.MonumentId });
+
+            //builder.Entity<TourMonument>()
+            //    .HasOne(tm => tm.Tour)
+            //    .WithMany(t => t.TourMonuments)
+            //    .HasForeignKey(tm => tm.TourId);
+
+            //builder.Entity<TourMonument>()
+            //    .HasOne(tm => tm.Monument)
+            //    .WithMany(m => m.TourMonuments)
+            //    .HasForeignKey(tm => tm.MonumentId);
         }
     }
 }

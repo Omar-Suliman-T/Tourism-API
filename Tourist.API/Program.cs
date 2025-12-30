@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 using System.Reflection;
@@ -10,14 +11,21 @@ using Tourist.API.Middleware;
 using Tourist.API.Services.UploadService;
 using Tourist.APPLICATION.DTO.Auth;
 using Tourist.APPLICATION.Interface;
+using Tourist.APPLICATION.Mapping;
 using Tourist.APPLICATION.Mapping.Auth;
 using Tourist.APPLICATION.Service.EmailService;
 using Tourist.APPLICATION.UseCase.Auth;
 using Tourist.APPLICATION.UseCase.Notification;
 using Tourist.APPLICATION.UseCase.Review;
+using Tourist.APPLICATION.UseCase.Hotel;
+using Tourist.APPLICATION.UseCase.Country;
+using Tourist.APPLICATION.UseCase.Review;
+using Tourist.APPLICATION.UseCase.Trip;
 using Tourist.DOMAIN.model;
 using Tourist.PERSISTENCE;
 using Tourist.PERSISTENCE.Repository;
+using Tourist.APPLICATION.UseCase.Tour;
+using Tourist.APPLICATION.UseCase.Monument;
 
 namespace Tourist.API
 {
@@ -30,9 +38,12 @@ namespace Tourist.API
             // Add services to the container.
             var EmailConfig = builder.Configuration.GetSection("EmailConfiguration")
                 .Get<EmailCofiguration>();
+
             builder.Services.AddSingleton(EmailConfig);
-            builder.Services.AddScoped<IEmailSender,EmailSender>();
+
+            builder.Services.AddScoped<IEmailSender, EmailSender>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
             builder.Services.AddScoped<RegisterUseCase>();
             builder.Services.AddScoped<ForgetPasswordUseCase>();
             builder.Services.AddScoped<ResetPasswordUseCase>();
@@ -44,7 +55,39 @@ namespace Tourist.API
 
             builder.Services.AddScoped<RegisterMap>();
 
+
+            builder.Services.AddScoped<AddCountryUseCase>();
+            builder.Services.AddScoped<UpdateCountryUseCase>();
+            builder.Services.AddScoped<DeleteCountryUseCase>();
+            builder.Services.AddScoped<GetCountryUseCase>();
+            builder.Services.AddScoped<GetAllCountryUseCase>();
+
+
+            builder.Services.AddScoped<AddHotelUseCase>();
+            builder.Services.AddScoped<UpdateHotelUseCase>();
+            builder.Services.AddScoped<DeleteHotelUseCase>();
+            builder.Services.AddScoped<GetHotelUseCase>();
+            builder.Services.AddScoped<GetAllHotelUseCase>();
+
+            builder.Services.AddScoped<AddTourUseCase>();
+            builder.Services.AddScoped<UpdateTourUseCase>();
+            builder.Services.AddScoped<DeleteTourUseCase>();
+            builder.Services.AddScoped<GetTourUseCase>();
+            builder.Services.AddScoped<GetAllToursUseCase>();
+
+            builder.Services.AddScoped<AddMonumentUseCase>();
+            builder.Services.AddScoped<UpdateMonumentUseCase>();
+            builder.Services.AddScoped<DeleteMonumentUseCase>();
+            builder.Services.AddScoped<GetMonumentUseCase>();
+            builder.Services.AddScoped<GetAllMonumentsUseCase>();
+
             builder.Services.AddScoped<ChangePasswordUseCase>();
+            builder.Services.AddScoped<GetTripsByIdUseCase>();
+            builder.Services.AddScoped<AddTripUseCase>();
+            builder.Services.AddScoped<GetActiveTripUseCase>();
+            builder.Services.AddScoped<RemoveTripUseCase>();
+
+
 
             builder.Services.AddScoped<LoginUseCase>();
             builder.Services.AddScoped<LoginMap>();
@@ -58,6 +101,7 @@ namespace Tourist.API
             builder.Services.AddIdentityCore<ApplicationUser>(options =>
                 options.User.RequireUniqueEmail = true)
                 .AddRoles<IdentityRole>()
+                .AddSignInManager<SignInManager<ApplicationUser>>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
@@ -66,10 +110,11 @@ namespace Tourist.API
             builder.Services.Configure<DataProtectionTokenProviderOptions>(opt =>
                 opt.TokenLifespan = TimeSpan.FromHours(2));
 
-            
-            builder.Services.Configure<JWTDTOs>(builder.Configuration.GetSection("JWT"));
+            builder.Services.AddAutoMapper(cfg => { }, typeof(ApplicationAssemblyMarker).Assembly);
 
-            builder.Services.AddAuthentication(options => {
+            builder.Services.Configure<JWTDTOs>(builder.Configuration.GetSection("JWT"));
+            builder.Services.AddAuthentication(options =>
+            {
                 //Check JWT Token Header
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 //[authrize]
@@ -79,7 +124,7 @@ namespace Tourist.API
             {
                 options.SaveToken = true;
                 options.RequireHttpsMetadata = false;
-                
+
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
@@ -114,6 +159,7 @@ namespace Tourist.API
             app.UseMiddleware<ExceptionHandlingMiddleware>();
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
 
