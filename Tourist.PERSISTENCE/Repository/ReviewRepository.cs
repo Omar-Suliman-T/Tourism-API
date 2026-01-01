@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using Tourist.APPLICATION.Interface;
@@ -16,13 +17,17 @@ namespace Tourist.PERSISTENCE.Repository
         {
             _context = context;
         }
-        public async Task<IEnumerable<Review>> GetAllWithDetailsAsync()
+        public async Task<IEnumerable<Review>> GetAllWithDetailsAsync(Expression<Func<Review, bool>>? filter = null)
         {
-            return await _context.Reviews
+            IQueryable<Review> query = _context.Reviews
                 .Include(r => r.Hotel)
                 .Include(r => r.Trip)
-                .Where(r => !r.IsDeleted)
-                .ToListAsync();
+                .Where(r => !r.IsDeleted);
+
+            if (filter != null)
+                query = query.Where(filter);
+
+            return await query.ToListAsync();
         }
 
         public async Task<Review?> GetByIdWithDetailsAsync(int id)

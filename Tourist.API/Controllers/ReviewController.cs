@@ -5,6 +5,7 @@ using Tourist.API.Services.UploadService;
 using Tourist.APPLICATION.DTO.Review;
 using Tourist.APPLICATION.UseCase.Review;
 using Tourist.APPLICATION.UseCase.Trip;
+using Tourist.DOMAIN.model;
 
 namespace Tourist.API.Controllers
 {
@@ -24,9 +25,9 @@ namespace Tourist.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll(Rating rating)
         {
-            var reviews = await _reviewUseCase.GetAllAsync();
+            var reviews = await _reviewUseCase.GetAllAsync(rating);
             return Ok(reviews);
         }
 
@@ -57,6 +58,7 @@ namespace Tourist.API.Controllers
                 image = imageUrl,
                 TripId = dto.TripId,
                 HotelId = dto.HotelId,
+                WhatWasGreat=dto.WhatWasGreat,
                 UserId = dto.UserId.ToString()
             };
 
@@ -80,7 +82,8 @@ namespace Tourist.API.Controllers
                 ReviewId = dto.ReviewId,
                 Rating = dto.Rating,
                 Comment = dto.Comment,
-                imageUrl = imageUrl
+                imageUrl = imageUrl,
+                WhatWasGreat = dto.WhatWasGreat,
             };
 
             var updated = await _reviewUseCase.UpdateAsync(appDto);

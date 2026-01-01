@@ -12,6 +12,8 @@ namespace Tourist.APPLICATION.DTO.Review
         public int ReviewId { get; set; }
         public string RatingText { get; set; }
         public string? Comment { get; set; }
+        public List<string>? WhatWasGreat { get; set; }
+
         public DateTime CreatedAt { get; set; }
         public string? imageUrl { get; set; }
 

@@ -23,6 +23,7 @@ namespace Tourist.DOMAIN.model
         public string? Comment { get; set; }
         public DateTime CreatedAt { get; set; }
         public string? imageUrl { get; set; }
+        public List<string>? whatWasGreat { get; set; }
 
         [ForeignKey("Trip")]
         public int? TripId { get; set; }

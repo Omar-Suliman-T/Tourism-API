@@ -14,9 +14,9 @@ namespace Tourist.APPLICATION.UseCase.Review
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<IEnumerable<GetReviewDTOs>> GetAllAsync()
+        public async Task<IEnumerable<GetReviewDTOs>> GetAllAsync(Rating rating)
         {
-            var reviews = await _unitOfWork.Review.GetAllWithDetailsAsync();
+            var reviews = await _unitOfWork.Review.GetAllWithDetailsAsync(r=>r.Rating==rating);
 
             return reviews.Select(r => new GetReviewDTOs
             {
@@ -25,6 +25,7 @@ namespace Tourist.APPLICATION.UseCase.Review
                 Comment = r.Comment,
                 CreatedAt = r.CreatedAt,
                 imageUrl = r.imageUrl,
+                WhatWasGreat=r.whatWasGreat,
                 HotelName = r.Hotel != null ? r.Hotel.Name : null,
                 TripName = r.Trip != null ? r.Trip.Name : null,
                 UserId = r.UserId
@@ -44,6 +45,7 @@ namespace Tourist.APPLICATION.UseCase.Review
                 Comment = r.Comment,
                 CreatedAt = r.CreatedAt,
                 imageUrl = r.imageUrl,
+                WhatWasGreat=r.whatWasGreat,
                 HotelName= r.Hotel != null ? r.Hotel.Name : null,
                 TripName = r.Trip != null ? r.Trip.Name : null,
                 UserId = r.UserId
@@ -60,6 +62,7 @@ namespace Tourist.APPLICATION.UseCase.Review
                 TripId = dto.TripId,
                 HotelId = dto.HotelId,
                 UserId = dto.UserId,
+                whatWasGreat=dto.WhatWasGreat
             };
 
             await _unitOfWork.Review.AddAsync(review);
@@ -82,6 +85,9 @@ namespace Tourist.APPLICATION.UseCase.Review
 
             if (dto.imageUrl != null)
                 review.imageUrl = dto.imageUrl;
+
+            if (dto.WhatWasGreat != null)
+                review.whatWasGreat = dto.WhatWasGreat;
 
             _unitOfWork.Review.Update(review);
             await _unitOfWork.SaveChangesAsync();

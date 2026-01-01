@@ -13,6 +13,7 @@ namespace Tourist.APPLICATION.DTO.Review
     {
         public Rating Rating { get; set; }
         public string? Comment { get; set; }
+        public List<string>? WhatWasGreat { get; set; }
         public string? image { get; set; }
 
         public int? TripId { get; set; }
