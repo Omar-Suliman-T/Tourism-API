@@ -12,8 +12,8 @@ namespace Tourist.APPLICATION.Mapping.Review
     {
         public ReviewProfile()
         {
-            CreateMap<AddreviewDTO, Tourist.DOMAIN.model.Review>();
-            CreateMap<Tourist.DOMAIN.model.Review, GetReviewByIdDTO>();
+            CreateMap<CreateReviewDTOs, Tourist.DOMAIN.model.Review>();
+            CreateMap<Tourist.DOMAIN.model.Review, GetReviewDTOs>();
         }
     }
 }

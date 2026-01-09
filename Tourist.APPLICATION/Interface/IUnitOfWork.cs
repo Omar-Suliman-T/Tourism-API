@@ -22,6 +22,7 @@ namespace Tourist.APPLICATION.Interface
         ITourRepository Tour {get;}    
         IMonumentRepository Monument {get;}    
         INotificationRepository Notification {get; }
+        IFavouriteRepository Favourite {get; }
         Task<int> CompleteAsync();
         public Task SaveChangesAsync();
     }

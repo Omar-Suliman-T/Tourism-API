@@ -32,6 +32,8 @@ namespace Tourist.PERSISTENCE
         public DbSet<TripActivity> Activities { get; set; }
         public DbSet<Tour> Tours { get; set; }
         public DbSet<Monument> Monuments { get; set; }
+        public DbSet<FavouriteHotels> FavouriteHotels { get; set; }
+
         //public DbSet<TourMonument> TourMonuments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -262,6 +264,22 @@ namespace Tourist.PERSISTENCE
                 
 
             });
+            builder.Entity<FavouriteHotels>(entity =>
+            {
+                entity.HasKey(f => f.FavouriteHotelId);
+                entity.Property(f => f.FavouriteHotelId).UseIdentityColumn();
+
+                entity.HasOne(f => f.User)
+                      .WithMany()
+                      .HasForeignKey(f => f.UserId)
+                      .OnDelete(DeleteBehavior.NoAction);
+
+                entity.HasOne(f => f.Hotel)
+                      .WithMany()
+                      .HasForeignKey(f => f.HotelId)
+                      .OnDelete(DeleteBehavior.NoAction);
+            });
+
 
             builder.Entity<Country>(c =>
                     c.HasIndex(e => e.Name));

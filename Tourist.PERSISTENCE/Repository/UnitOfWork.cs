@@ -15,6 +15,7 @@ using Tourist.DOMAIN.model;
 namespace Tourist.PERSISTENCE.Repository
 {
     public class UnitOfWork : IUnitOfWork
+
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IEmailSender _emailSender;
@@ -37,6 +38,8 @@ namespace Tourist.PERSISTENCE.Repository
 
         public IAuth Auth { get; private set; }
         public IUser User { get; private set; }
+
+        public IFavouriteRepository Favourite { get; private set; }
 
         public UnitOfWork(
             UserManager<ApplicationUser> userManager,
@@ -74,7 +77,7 @@ namespace Tourist.PERSISTENCE.Repository
             Trip = new TripRepository(_context);
             Review = new ReviewRepository(_context);
             Notification = new NotificationRepository(_context);
-
+            Favourite = new FavouriteRepository(_context);
 
         }
 
