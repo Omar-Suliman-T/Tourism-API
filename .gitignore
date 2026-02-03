@@ -17,10 +17,6 @@ Thumbs.db
 packages/
 
 ## Secrets
-appsettings.Development.json
-Tourist.API/appsettings.json
-Tourist.API/appsettings.Development.json
-
 secrets.json
 
 ## IDEs
