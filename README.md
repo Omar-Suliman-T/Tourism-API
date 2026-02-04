@@ -94,7 +94,6 @@ Built with scalability, maintainability, and real-world production readiness in 
 
 ## 📂 Project Structure
 
-```plaintext
 Tourist/
 ├── Tourist.API
 ├── Tourist.Application
