@@ -101,10 +101,14 @@ Tourist/
 └── Tourist.Persistence
 ```
 ⚙️ Getting Started
+```
 bash
 Copy code
 git clone https://github.com/Omar-Suliman-T/Tourism-API.git
+```
+```
 dotnet ef database update --project Tourist.Persistence --startup-project Tourist.API
 dotnet run --project Tourist.API
+```
 ☁️ Deployment
 <p> <img src="https://img.shields.io/badge/Hosted%20On-Azure-0078D4?logo=microsoftazure&logoColor=white" /> </p>
