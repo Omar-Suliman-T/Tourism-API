@@ -5,7 +5,7 @@
 
 <p align="center">
   <!-- Core -->
-  <img src="https://img.shields.io/badge/.NET-9-512BD4?logo=dotnet&logoColor=white" />
+  <img src="https://img.shields.io/badge/.NET-9-512BD4?logoColor=white" />
   <img src="https://img.shields.io/badge/C%23-Modern-blue?logo=csharp&logoColor=white" />
   <img src="https://img.shields.io/badge/Architecture-Clean-success" />
 
