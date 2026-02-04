@@ -93,13 +93,13 @@ Built with scalability, maintainability, and real-world production readiness in 
 ---
 
 ## 📂 Project Structure
-
+```
 Tourist/
 ├── Tourist.API
 ├── Tourist.Application
 ├── Tourist.Models
 └── Tourist.Persistence
-
+```
 ⚙️ Getting Started
 bash
 Copy code
